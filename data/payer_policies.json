@@ -1,0 +1,57 @@
+{
+  "payers": {
+    "BlueCross": {
+      "id": "BCBS",
+      "policies": [
+        {
+          "id": "BCBS-001",
+          "description": "Requires modifier -59 for distinct procedural services on same day",
+          "affected_cpt": ["20610", "20600", "20605"],
+          "required_modifier": "59",
+          "fix": "Add modifier -59 to indicate this is a distinct procedural service"
+        },
+        {
+          "id": "BCBS-003",
+          "description": "Telehealth visits require place of service code 02 and modifier -95",
+          "affected_cpt": ["99213", "99214", "99215"],
+          "telehealth_modifier": "95",
+          "fix": "Add modifier -95 and place of service 02 for all telehealth visits billed to BlueCross"
+        }
+      ]
+    },
+    "Medicare": {
+      "id": "MEDICARE",
+      "policies": [
+        {
+          "id": "MEDICARE-001",
+          "description": "Medicare does not cover routine physicals under standard Part B",
+          "affected_cpt": ["99381", "99382", "99383", "99384", "99385"],
+          "covered": false,
+          "fix": "Bill Welcome to Medicare visit G0402 for first year beneficiaries"
+        }
+      ]
+    },
+    "United": {
+      "id": "UHC",
+      "policies": [
+        {
+          "id": "UHC-001",
+          "description": "United requires prior authorization for sleep studies",
+          "affected_cpt": ["95807", "95808", "95810", "95811"],
+          "requires_auth": true,
+          "fix": "Submit prior authorization request through United portal before scheduling sleep study"
+        },
+        {
+          "id": "UHC-002",
+          "description": "United requires modifier -25 for same-day E/M and procedure",
+          "affected_cpt_pairs": [
+            ["99213", "20610"],
+            ["99214", "20610"]
+          ],
+          "required_modifier": "25",
+          "fix": "Add modifier -25 to E/M code"
+        }
+      ]
+    }
+  }
+}

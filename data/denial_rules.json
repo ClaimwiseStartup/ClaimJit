@@ -1,0 +1,54 @@
+{
+  "rules": [
+    {
+      "id": "R001",
+      "carc_code": "4",
+      "description": "E/M code billed same day as procedure without modifier -25",
+      "affected_cpt_pairs": [
+        ["99213", "20610"],
+        ["99214", "20610"],
+        ["99213", "96372"],
+        ["99214", "96372"],
+        ["99213", "11721"],
+        ["99214", "11721"]
+      ],
+      "required_modifier": "25",
+      "fix": "Add modifier -25 to the E/M code to indicate a significant separately identifiable service was performed"
+    },
+    {
+      "id": "R002",
+      "carc_code": "16",
+      "description": "Diagnosis code does not support medical necessity for procedure",
+      "common_pairs": [
+        {"cpt": "93000", "invalid_icd10_prefix": ["Z00", "Z01"]},
+        {"cpt": "71046", "invalid_icd10_prefix": ["Z00", "Z01"]}
+      ],
+      "fix": "Ensure the diagnosis code reflects the specific condition requiring this procedure, not a routine exam code"
+    },
+    {
+      "id": "R003",
+      "carc_code": "50",
+      "description": "Non-covered service billed to Medicare",
+      "non_covered_cpt": ["99211", "90901", "97150"],
+      "fix": "Verify patient has supplemental coverage or bill patient directly for this service"
+    },
+    {
+      "id": "R004",
+      "carc_code": "97",
+      "description": "Bundled procedure billed separately",
+      "bundled_pairs": [
+        ["99213", "99212"],
+        ["99214", "99213"],
+        ["20610", "20600"]
+      ],
+      "fix": "Bill only the higher-level code. The lower-level code is bundled and cannot be billed separately on the same date"
+    },
+    {
+      "id": "R005",
+      "carc_code": "B15",
+      "description": "Missing or invalid prior authorization",
+      "requires_auth_cpt": ["27447", "29827", "63030", "70553", "74178"],
+      "fix": "Obtain prior authorization from payer before submitting or appeal with clinical documentation showing medical necessity"
+    }
+  ]
+}
