@@ -8,14 +8,41 @@
           "description": "Requires modifier -59 for distinct procedural services on same day",
           "affected_cpt": ["20610", "20600", "20605"],
           "required_modifier": "59",
-          "fix": "Add modifier -59 to indicate this is a distinct procedural service"
+          "fix": "Add modifier -59 to indicate this is a distinct procedural service separate from other procedures performed the same day"
+        },
+        {
+          "id": "BCBS-002",
+          "description": "Physical therapy CPT codes require prior authorization for more than 6 visits",
+          "affected_cpt": ["97110", "97530", "97140"],
+          "requires_auth_after_visits": 6,
+          "fix": "Obtain prior authorization from BlueCross before submitting claims beyond 6 physical therapy visits"
         },
         {
           "id": "BCBS-003",
           "description": "Telehealth visits require place of service code 02 and modifier -95",
           "affected_cpt": ["99213", "99214", "99215"],
           "telehealth_modifier": "95",
+          "telehealth_pos": "02",
           "fix": "Add modifier -95 and place of service 02 for all telehealth visits billed to BlueCross"
+        }
+      ]
+    },
+    "Aetna": {
+      "id": "AETNA",
+      "policies": [
+        {
+          "id": "AETNA-001",
+          "description": "Aetna requires pre-authorization for all MRI procedures",
+          "affected_cpt": ["70553", "72148", "73721", "74183"],
+          "requires_auth": true,
+          "fix": "Obtain Aetna prior authorization before performing MRI. Call 1-800-Aetna-1 or use Aetna portal"
+        },
+        {
+          "id": "AETNA-002",
+          "description": "Aetna does not cover acupuncture under standard plans",
+          "affected_cpt": ["97810", "97811", "97813", "97814"],
+          "covered": false,
+          "fix": "Verify patient has supplemental acupuncture benefit. If not covered bill patient directly"
         }
       ]
     },
@@ -27,7 +54,13 @@
           "description": "Medicare does not cover routine physicals under standard Part B",
           "affected_cpt": ["99381", "99382", "99383", "99384", "99385"],
           "covered": false,
-          "fix": "Bill Welcome to Medicare visit G0402 for first year beneficiaries"
+          "fix": "Bill Welcome to Medicare visit (G0402) for first year beneficiaries or Annual Wellness Visit (G0438/G0439) for subsequent years"
+        },
+        {
+          "id": "MEDICARE-002",
+          "description": "Medicare requires -GA modifier when patient has signed ABN for non-covered service",
+          "required_modifier_for_abn": "GA",
+          "fix": "Attach signed ABN form and add modifier -GA to the claim to bill patient for non-covered service"
         }
       ]
     },
@@ -43,13 +76,15 @@
         },
         {
           "id": "UHC-002",
-          "description": "United requires modifier -25 for same-day E/M and procedure",
+          "description": "United requires modifier -25 AND documentation of medical necessity for same-day E/M and procedure",
           "affected_cpt_pairs": [
             ["99213", "20610"],
-            ["99214", "20610"]
+            ["99214", "20610"],
+            ["99213", "96372"],
+            ["99214", "96372"]
           ],
           "required_modifier": "25",
-          "fix": "Add modifier -25 to E/M code"
+          "fix": "Add modifier -25 to E/M code and ensure documentation clearly states the E/M was a separate and distinct service from the procedure"
         }
       ]
     }

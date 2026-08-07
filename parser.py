@@ -1,7 +1,10 @@
+import os
+from dotenv import load_dotenv
+load_dotenv()
 import anthropic
 import json
 
-client = anthropic.Anthropic(api_key="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")
+client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 
 def parse_clinical_note(note: str) -> dict:
     prompt = f"""You are a medical coding assistant. Read the clinical note below and extract the billing codes.
