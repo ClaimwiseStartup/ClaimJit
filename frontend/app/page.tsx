@@ -127,12 +127,15 @@ export default function Home() {
 
       <header className="relative z-10 flex flex-col gap-4 px-6 py-6 md:flex-row md:items-center md:justify-between md:px-8 lg:px-10">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#1F4B4C] shadow-[0_18px_40px_-30px_rgba(31,75,76,0.9)]">
-            <div className="h-3.5 w-3.5 rounded-[6px] bg-[#C9873A]" />
-          </div>
-          <span className="text-lg font-semibold tracking-tight">ClaimWise</span>
+          <a href="/" className="inline-flex items-center" aria-label="Prevo home">
+            <img
+              src="/prevo_transparent_background_logo.png"
+              alt="Prevo"
+              className="h-10 w-auto max-w-[220px] object-contain sm:h-11 md:h-12"
+            />
+          </a>
         </div>
-        <span className="inline-flex items-center rounded-full border border-[#1F4B4C]/20 bg-white/90 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#1F4B4C] shadow-sm backdrop-blur-sm">
+        <span className="inline-flex items-center justify-center rounded-full border border-[rgba(31,75,76,0.2)] bg-white/90 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#1F4B4C] shadow-sm backdrop-blur-sm">
           MVP · Internal Use Only
         </span>
       </header>
@@ -156,7 +159,7 @@ export default function Home() {
                 Every denied claim is money a small clinic doesn't get back.
               </h1>
               <p className="mt-4 max-w-xl text-base leading-8 text-slate-700 sm:text-lg">
-                Most denials come from small, fixable problems: a missing modifier, a non-covered code, a mismatched diagnosis. ClaimWise catches them before the claim ever leaves the building.
+                Most denials come from small, fixable problems: a missing modifier, a non-covered code, a mismatched diagnosis. Prevo catches them before the claim ever leaves the building.
               </p>
             </div>
             <div className="rounded-[1.75rem] border border-[#1F4B4C]/10 bg-[#F7F6F2] p-4 shadow-sm">
@@ -227,7 +230,7 @@ export default function Home() {
             </div>
           </div>
           <p className="text-[10px] text-[#1C2321]/45 mt-1 mb-10">
-            Source: Kodiak Solutions 2024 revenue cycle data; American Medical Association. Industry averages, not ClaimWise-specific results
+            Source: Kodiak Solutions 2024 revenue cycle data; American Medical Association. Industry averages, not Prevo-specific results
           </p>
 
           <section className="grid gap-6 lg:grid-cols-[minmax(260px,320px)_1fr] mb-10">
@@ -235,7 +238,7 @@ export default function Home() {
               <p className="text-[10px] uppercase tracking-[0.28em] text-[#5F6C68]">Capture workflow</p>
               <p className="mt-4 text-lg font-semibold text-[#14221F]">From note to claim in one flow</p>
               <p className="mt-3 text-sm leading-7 text-slate-700">
-                Paste the clinical note, select the payer, and ClaimWise generates a payment-ready claim that reflects payer-specific rules.
+                Paste the clinical note, select the payer, and Prevo generates a payment-ready claim that reflects payer-specific rules.
               </p>
               <div className="mt-6 space-y-3 text-sm text-[#1C2321]/75">
                 <div className="flex items-start gap-3">

@@ -21,7 +21,7 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ClaimJit — Claim Analyzer",
+  title: "Prevo — Better Data. Better Decisions.",
   description: "AI-coded claims with automatic denial prevention.",
 };
 
