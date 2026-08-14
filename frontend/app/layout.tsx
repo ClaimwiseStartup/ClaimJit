@@ -30,6 +30,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
+      <head>
+        <meta name="robots" content="noindex,nofollow" />
+        <meta name="googlebot" content="noindex" />
+      </head>
       <body className={`${serif.variable} ${sans.variable} ${mono.variable} antialiased`}>
         {children}
       </body>

@@ -4,8 +4,29 @@ import { motion, AnimatePresence, useInView } from "framer-motion";
 
 const PAYERS = ["BlueCross", "Medicare", "United", "Aetna"];
 
-const EXAMPLE_NOTE =
-  "Patient is a 45-year-old male presenting with right knee pain. Examination shows moderate effusion. Performed aspiration and injection of the right knee joint with corticosteroid. Also addressed elevated blood pressure during the visit.";
+const EXAMPLES = [
+  {
+    id: "pcp",
+    label: "Primary care",
+    payer: "BlueCross",
+    note:
+      "Patient is a 45-year-old male presenting with right knee pain. Exam shows moderate effusion. Performed aspiration and injection of the right knee joint with corticosteroid. Also addressed elevated blood pressure during the visit.",
+  },
+  {
+    id: "bh",
+    label: "Behavioral health",
+    payer: "Medicare",
+    note:
+      "30-year-old female attended a 50-minute psychotherapy session for recurrent depression and anxiety. Discussed medication adherence, CBT techniques, and safety planning. No acute safety concerns.",
+  },
+  {
+    id: "complex",
+    label: "Complex multi-dx",
+    payer: "United",
+    note:
+      "67-year-old male with type 2 diabetes, chronic kidney disease stage 3, and coronary artery disease. Presented with shortness of breath and chest tightness. Performed EKG, troponin labs ordered, started IV aspirin and nitroglycerin, and arranged cardiology consult. Also adjusted insulin dosing for hyperglycemia.",
+  },
+];
 
 const formatFloat = (value: number) => `${value.toFixed(1)}%`;
 
@@ -15,6 +36,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState("");
+  const [validationError, setValidationError] = useState("");
   const [copied, setCopied] = useState(false);
   const [claimDenied, setClaimDenied] = useState(0);
   const [neverReworked, setNeverReworked] = useState(0);
@@ -90,35 +112,79 @@ export default function Home() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const analyze = async (overrideNote?: string) => {
+  const analyze = async (overrideNote?: string, overridePayer?: string) => {
     const noteToUse = overrideNote ?? note;
-    if (!noteToUse.trim()) return;
+    const payerToUse = overridePayer ?? payer;
+    if (!noteToUse.trim()) {
+      setValidationError("Please paste a clinical note to generate a claim.");
+      return;
+    }
     setLoading(true);
     setError("");
+    setValidationError("");
     setResult(null);
+
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+    const controller = new AbortController();
+    const timeoutMs = 18000; // 18 seconds
+    const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
+
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
       const res = await fetch(`${apiUrl}/analyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
         body: JSON.stringify({
           note: noteToUse,
-          payer,
+          payer: payerToUse,
           date_of_service: new Date().toISOString().split("T")[0],
         }),
       });
-      const data = await res.json();
+
+      if (!res.ok) {
+        let errMsg = "Something went wrong generating this claim. Please try again.";
+        try {
+          const errBody = await res.json();
+          if (errBody?.detail) errMsg = errBody.detail;
+          else if (errBody?.message) errMsg = errBody.message;
+        } catch (e) {
+          // ignore JSON parse errors and fall back to generic message
+        }
+        setError(errMsg);
+        return;
+      }
+
+      let data: any;
+      try {
+        data = await res.json();
+      } catch (e) {
+        setError("Received unexpected response from backend. Please try again.");
+        return;
+      }
+
+      // Basic validation of expected response shape
+      if (!data || !data.corrected_claim || !Array.isArray(data.corrected_claim.cpt_codes) || !Array.isArray(data.corrected_claim.icd10_codes)) {
+        setError("Received unexpected response from backend. Please try again.");
+        return;
+      }
+
       setResult(data);
-    } catch {
-      setError("Could not connect to backend. Make sure it is running.");
+    } catch (e: any) {
+      if (e && e.name === "AbortError") {
+        setError("Request timed out. The backend is taking too long. Please try again.");
+      } else {
+        setError("Something went wrong generating this claim. Please try again.");
+      }
     } finally {
+      window.clearTimeout(timeoutId);
       setLoading(false);
     }
   };
 
-  const tryExample = () => {
-    setNote(EXAMPLE_NOTE);
-    analyze(EXAMPLE_NOTE);
+  const tryExample = (example: any) => {
+    setNote(example.note);
+    setPayer(example.payer);
+    analyze(example.note, example.payer);
   };
 
   return (
@@ -264,7 +330,7 @@ export default function Home() {
                 </div>
                 {!note && (
                   <button
-                    onClick={tryExample}
+                    onClick={() => tryExample(EXAMPLES[0])}
                     className="self-start text-[11px] text-[#1F4B4C] font-medium underline decoration-[#1F4B4C]/30 underline-offset-2 hover:decoration-[#1F4B4C] transition-colors"
                   >
                     Try an example
@@ -277,12 +343,28 @@ export default function Home() {
                   <label className="text-[9px] font-bold text-[#1C2321]/75 uppercase tracking-[0.22em] mb-2 block px-3.5">
                     Clinical Note
                   </label>
+                  <div className="mb-3 flex gap-2 flex-wrap">
+                    {EXAMPLES.map((ex) => (
+                      <button
+                        key={ex.id}
+                        onClick={() => tryExample(ex)}
+                        className={`text-sm px-3 py-1.5 rounded-full border transition-colors ${ex.note === note ? 'bg-[#1F4B4C] text-white border-[#1F4B4C]' : 'bg-white text-[#1C2321] border-[#E6E6E6] hover:bg-[#F3F7F3]'}`}
+                      >
+                        {ex.label}
+                      </button>
+                    ))}
+                  </div>
+
                   <textarea
                     className="w-full min-h-[11.5rem] bg-[#FAF8F4] border border-[#1C2321]/[0.12] rounded-2xl p-4 text-sm text-[#1C2321] placeholder-[#1C2321]/35 focus:outline-none focus:border-[#C9873A]/60 focus:ring-2 focus:ring-[#C9873A]/15 resize-none leading-relaxed transition-all"
                     placeholder="Paste the doctor's clinical note here..."
                     value={note}
-                    onChange={(e) => setNote(e.target.value)}
+                    onChange={(e) => { setNote(e.target.value); setValidationError(""); setError(""); }}
                   />
+
+                  {validationError && (
+                    <p className="text-xs text-red-700 mt-2">{validationError}</p>
+                  )}
                 </div>
                 <div className="space-y-3">
                   <label className="text-[9px] font-bold text-[#1C2321]/75 uppercase tracking-[0.22em] block px-3.5">
@@ -297,14 +379,34 @@ export default function Home() {
                       <option key={p} value={p}>{p}</option>
                     ))}
                   </select>
-                  <motion.button
-                    onClick={() => analyze()}
-                    disabled={loading || !note.trim()}
-                    whileTap={{ scale: 0.97 }}
-                    className="w-full h-[48px] rounded-2xl text-sm font-semibold transition-all duration-200 bg-[#C9873A] text-white shadow-[0_16px_30px_-18px_rgba(201,135,58,0.45)] hover:bg-[#b5802f] active:scale-[0.98] active:bg-[#9f6d26] disabled:cursor-not-allowed disabled:opacity-50 whitespace-nowrap"
-                  >
-                    {loading ? "Analyzing..." : "Generate Claim"}
-                  </motion.button>
+                  <div className="flex gap-3">
+                    <motion.button
+                      onClick={() => analyze()}
+                      disabled={loading}
+                      whileTap={{ scale: 0.97 }}
+                      className="flex-1 h-[48px] rounded-2xl text-xs font-medium px-4 transition-all duration-200 bg-[#C9873A] text-white shadow-[0_16px_30px_-18px_rgba(201,135,58,0.45)] hover:bg-[#b5802f] active:scale-[0.98] active:bg-[#9f6d26] disabled:cursor-not-allowed disabled:opacity-50 whitespace-nowrap items-center justify-center inline-flex"
+                    >
+                      {loading ? (
+                        <>
+                          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                          </svg>
+                          Generating...
+                        </>
+                      ) : (
+                        "Generate Claim"
+                      )}
+                    </motion.button>
+
+                    <button
+                      onClick={() => { setNote(""); setPayer(PAYERS[0]); setResult(null); setError(""); setValidationError(""); setCopied(false); }}
+                      disabled={loading}
+                      className="w-28 h-[48px] rounded-2xl text-sm font-semibold transition-all duration-200 bg-white text-[#1C2321] border border-[#E6E6E6] shadow-sm hover:bg-[#F8FBF8] disabled:opacity-50"
+                    >
+                      Clear
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
