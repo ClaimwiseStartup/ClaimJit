@@ -1,42 +1,34 @@
-import type { Metadata } from "next";
-import { Source_Serif_4, Inter, IBM_Plex_Mono } from "next/font/google";
-import "./globals.css";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import { authOptions } from "@/lib/auth";
+import { FIRM } from "@/lib/constants";
 
-const serif = Source_Serif_4({
-  variable: "--font-serif",
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-});
+export default async function StaffLayout({ children }: { children: React.ReactNode }) {
+  const session = await getServerSession(authOptions);
+  if (!session) redirect("/login");
+  if (session.user.role !== "STAFF" && session.user.role !== "ATTORNEY") redirect("/dashboard");
 
-const sans = Inter({
-  variable: "--font-sans",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-});
-
-const mono = IBM_Plex_Mono({
-  variable: "--font-mono",
-  subsets: ["latin"],
-  weight: ["400", "500"],
-});
-
-export const metadata: Metadata = {
-  title: "Prevo — Better Data. Better Decisions.",
-  description: "AI-coded claims with automatic denial prevention.",
-};
-
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <head>
-        <meta name="robots" content="noindex,nofollow" />
-        <meta name="googlebot" content="noindex" />
-      </head>
-      <body className={`${serif.variable} ${sans.variable} ${mono.variable} antialiased`}>
-        {children}
-      </body>
-    </html>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <header className="bg-navy-900 text-white py-3 px-4 sm:px-6 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Link href="/staff" className="font-serif font-bold text-white text-sm">
+            {FIRM.shortName} Staff Portal
+          </Link>
+          <Link href="/staff" className="text-white/60 hover:text-white text-xs transition-colors">Dashboard</Link>
+          <Link href="/staff/approvals" className="text-white/60 hover:text-white text-xs transition-colors">Approvals</Link>
+          <Link href="/staff/messages" className="text-white/60 hover:text-white text-xs transition-colors">Messages</Link>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="text-gold-400 text-xs font-semibold uppercase">{session.user.role}</span>
+          <span className="text-white/50 text-xs">{session.user.name || session.user.email}</span>
+          <form action="/api/auth/signout" method="POST">
+            <button className="text-white/50 hover:text-white text-xs transition-colors">Sign Out</button>
+          </form>
+        </div>
+      </header>
+      <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-8">{children}</main>
+    </div>
   );
 }
