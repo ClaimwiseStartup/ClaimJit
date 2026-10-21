@@ -115,7 +115,7 @@ export default function ProductDemoSection() {
   const ready = !!result?.ready_to_submit;
 
   return (
-    <section id="demo" className="relative py-24 sm:py-32 bg-[#0b2324] overflow-hidden">
+    <section id="demo" className="relative py-24 sm:py-32 bg-[#0B1220] overflow-hidden">
       <div
         className="absolute inset-0 opacity-40"
         style={{
@@ -123,7 +123,7 @@ export default function ProductDemoSection() {
           backgroundSize: "36px 36px",
         }}
       />
-      <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full bg-[#C9873A]/10 blur-[120px]" />
+      <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full bg-[#0F766E]/10 blur-[120px]" />
 
       <div className="relative max-w-6xl mx-auto px-6">
         <motion.div
@@ -133,7 +133,7 @@ export default function ProductDemoSection() {
           transition={{ duration: 0.8, ease }}
           className="text-center mb-12"
         >
-          <span className="text-[#E0A862] text-xs font-semibold uppercase tracking-[0.2em]">Live demo</span>
+          <span className="text-[#5EEAD4] text-xs font-semibold uppercase tracking-[0.2em]">Live demo</span>
           <h2 className="font-serif text-4xl sm:text-5xl font-semibold text-white mt-4">Run a note through Prevo.</h2>
           <p className="text-white/55 mt-4 max-w-xl mx-auto">
             Paste a de-identified clinical note, pick the payer, and get the corrected claim back with
@@ -146,16 +146,16 @@ export default function ProductDemoSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.9, delay: 0.1, ease }}
-          className="rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-sm overflow-hidden shadow-[0_40px_100px_-30px_rgba(0,0,0,0.6)]"
+          className="rounded-xl border border-white/10 bg-white/[0.04] backdrop-blur-sm overflow-hidden shadow-[0_40px_100px_-30px_rgba(0,0,0,0.6)]"
         >
           {/* Window chrome */}
           <div className="flex items-center gap-2 px-5 py-3 border-b border-white/[0.06] bg-white/[0.02]">
             <div className="flex gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-[#ff5f57]/70" />
-              <span className="w-3 h-3 rounded-full bg-[#febc2e]/70" />
-              <span className="w-3 h-3 rounded-full bg-[#28c840]/70" />
+              <span className="w-3 h-3 rounded-full bg-white/15" />
+              <span className="w-3 h-3 rounded-full bg-white/15" />
+              <span className="w-3 h-3 rounded-full bg-white/15" />
             </div>
-            <span className="flex-1 text-center font-mono text-[11px] text-white/30">app.prevo.ai / claim-review</span>
+            <span className="flex-1 text-center font-mono text-[10.5px] tracking-[0.08em] text-white/45">PREVO · CLAIM REVIEW WORKSTATION</span>
           </div>
 
           <div className="grid lg:grid-cols-2">
@@ -164,7 +164,7 @@ export default function ProductDemoSection() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label htmlFor="demo-note" className="text-white/60 text-sm font-medium">Clinical note</label>
-                  <button onClick={tryExample} className="text-[#E0A862]/80 text-xs hover:text-[#E0A862] transition-colors cursor-pointer">
+                  <button onClick={tryExample} className="text-[#5EEAD4]/80 text-xs hover:text-[#5EEAD4] transition-colors cursor-pointer">
                     Try the knee injection example →
                   </button>
                 </div>
@@ -174,7 +174,7 @@ export default function ProductDemoSection() {
                   onChange={(e) => setNote(e.target.value)}
                   placeholder="S: … O: … A/P: …"
                   rows={11}
-                  className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white/90 text-sm placeholder:text-white/20 focus:outline-none focus:border-[#C9873A]/50 resize-none font-mono leading-relaxed"
+                  className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white/90 text-sm placeholder:text-white/20 focus:outline-none focus:border-[#0F766E]/50 resize-none font-mono leading-relaxed"
                 />
                 <p className="mt-2 text-[11px] text-white/30">Demo only. Don't paste real patient identifiers.</p>
               </div>
@@ -188,7 +188,7 @@ export default function ProductDemoSection() {
                       onClick={() => setPayer(p)}
                       className={`py-2.5 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
                         payer === p
-                          ? "bg-[#C9873A]/20 border-[#C9873A]/50 text-white"
+                          ? "bg-[#0F766E]/20 border-[#0F766E]/50 text-white"
                           : "border-white/10 text-white/50 hover:text-white/80 hover:border-white/20"
                       }`}
                     >
@@ -201,7 +201,7 @@ export default function ProductDemoSection() {
               <button
                 onClick={() => analyze()}
                 disabled={loading || !note.trim()}
-                className="w-full py-4 rounded-xl bg-[#C9873A] text-white font-semibold text-sm hover:bg-[#b5772e] transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                className="w-full py-4 rounded-xl bg-[#0F766E] text-white font-semibold text-sm hover:bg-[#115E59] transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
               >
                 {loading ? "Coding the claim and applying payer rules…" : "Analyze claim"}
               </button>
@@ -220,15 +220,15 @@ export default function ProductDemoSection() {
                     {["Reading documentation", "Assigning ICD-10-CM and CPT", "Checking NCCI edits and modifiers", `Applying ${payer} policy`].map((s, i) => (
                       <motion.div key={s} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.35 }}
                         className="flex items-center gap-3 text-sm text-white/60">
-                        <motion.span className="w-2 h-2 rounded-full bg-[#C9873A]" animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }} />
+                        <motion.span className="w-2 h-2 rounded-full bg-[#0F766E]" animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }} />
                         {s}
                       </motion.div>
                     ))}
                   </motion.div>
                 ) : result && claim ? (
                   <motion.div key="res" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6">
-                    <div className={`flex flex-wrap items-center gap-3 rounded-xl px-4 py-3 border ${ready ? "bg-[#5C8558]/15 border-[#5C8558]/30" : "bg-[#C9873A]/10 border-[#C9873A]/30"}`}>
-                      <span className={`text-sm font-semibold ${ready ? "text-[#a8d4a4]" : "text-[#F0C38A]"}`}>
+                    <div className={`flex flex-wrap items-center gap-3 rounded-xl px-4 py-3 border ${ready ? "bg-[#0F766E]/15 border-[#0F766E]/30" : "bg-[#B45309]/15 border-[#F59E0B]/30"}`}>
+                      <span className={`text-sm font-semibold ${ready ? "text-[#99F6E4]" : "text-[#FCD34D]"}`}>
                         {ready ? "✓ Cleared for submission" : "At risk of denial"}
                       </span>
                       <span className="text-xs text-white/50">
@@ -241,16 +241,16 @@ export default function ProductDemoSection() {
                       )}
                     </div>
 
-                    <CodeChips label="CPT / HCPCS" codes={claim.cpt_codes} accent="text-[#E0A862]" />
-                    <CodeChips label="ICD-10-CM" codes={claim.icd10_codes} accent="text-[#9fd0cf]" />
+                    <CodeChips label="CPT / HCPCS" codes={claim.cpt_codes} accent="text-[#5EEAD4]" />
+                    <CodeChips label="ICD-10-CM" codes={claim.icd10_codes} accent="text-[#CBD5E1]" />
                     {claim.modifiers.length > 0 && (
-                      <CodeChips label="Modifiers" codes={claim.modifiers.map((m) => `-${m}`)} accent="text-[#a8d4a4]" />
+                      <CodeChips label="Modifiers" codes={claim.modifiers.map((m) => `-${m}`)} accent="text-[#99F6E4]" />
                     )}
 
                     <div className="flex items-center justify-between font-mono text-[11px] text-white/40">
                       <span>PAYER <span className="text-white/70 ml-1">{claim.payer}</span></span>
                       <span>DOS <span className="text-white/70 ml-1">{claim.date_of_service}</span></span>
-                      <button onClick={copyClaim} className="text-[#E0A862]/80 hover:text-[#E0A862] cursor-pointer">
+                      <button onClick={copyClaim} className="text-[#5EEAD4]/80 hover:text-[#5EEAD4] cursor-pointer">
                         {copied ? "Copied ✓" : "Copy claim"}
                       </button>
                     </div>
@@ -264,10 +264,10 @@ export default function ProductDemoSection() {
 
                     {actions.length > 0 && (
                       <div>
-                        <p className="text-[10px] uppercase tracking-[0.14em] text-[#F0C38A] mb-2">Required before submission</p>
+                        <p className="text-[10px] uppercase tracking-[0.14em] text-[#FCD34D] mb-2">Required before submission</p>
                         <div className="space-y-2">
                           {actions.map((a, i) => (
-                            <div key={i} className="rounded-xl border border-[#C9873A]/20 bg-[#C9873A]/[0.06] p-3.5">
+                            <div key={i} className="rounded-lg border border-white/10 border-l-[3px] border-l-[#F59E0B] bg-[#B45309]/[0.08] p-3.5">
                               <p className="text-sm text-white/90 font-medium">{a.action}</p>
                               <p className="text-[12.5px] text-white/55 mt-1 leading-relaxed">{a.detail}</p>
                             </div>
@@ -283,7 +283,7 @@ export default function ProductDemoSection() {
                 ) : (
                   <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                     className="h-full flex flex-col items-center justify-center text-center py-20">
-                    <div className="w-14 h-14 rounded-2xl bg-white/[0.05] border border-white/10 flex items-center justify-center mb-4 font-mono text-[#E0A862]/70 text-sm">
+                    <div className="w-14 h-14 rounded-2xl bg-white/[0.05] border border-white/10 flex items-center justify-center mb-4 font-mono text-[#5EEAD4]/70 text-sm">
                       Rx
                     </div>
                     <p className="text-white/35 text-sm max-w-[260px]">The corrected claim, codes and sign-off items show up here.</p>

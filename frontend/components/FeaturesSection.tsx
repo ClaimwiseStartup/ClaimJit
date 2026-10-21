@@ -85,13 +85,13 @@ export default function FeaturesSection() {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <span className="text-[#C9873A] text-sm font-semibold uppercase tracking-widest">
+          <span className="text-[#0F766E] text-sm font-semibold uppercase tracking-widest">
             Inside Prevo
           </span>
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1C2321] mt-3">
+          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1E293B] mt-3">
             Everything You Need to Prevent Denials
           </h2>
-          <p className="text-[#1C2321]/60 mt-4 max-w-2xl mx-auto">
+          <p className="text-[#1E293B]/60 mt-4 max-w-2xl mx-auto">
             Purpose-built tools for independent practices that don&apos;t have a
             dedicated billing department.
           </p>
@@ -101,22 +101,22 @@ export default function FeaturesSection() {
           {features.map((f, i) => (
             <motion.div
               key={f.title}
-              className="group relative p-8 rounded-2xl border border-[#1F4B4C]/5 bg-[#FAF8F4]/50 hover:bg-[#FAF8F4] transition-all duration-300 hover:shadow-xl hover:shadow-[#1F4B4C]/5 hover:border-[#C9873A]/15"
+              className="group relative p-8 rounded-2xl border border-[#1E293B]/5 bg-[#F8FAFC]/50 hover:bg-[#F8FAFC] transition-all duration-300 hover:shadow-xl hover:shadow-[#1E293B]/5 hover:border-[#0F766E]/15"
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: i * 0.08 }}
             >
               {/* Hover glow */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#C9873A]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#0F766E]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
               <div className="relative">
-                <div className="w-12 h-12 rounded-xl bg-[#1F4B4C]/5 text-[#1F4B4C] flex items-center justify-center mb-5 group-hover:bg-[#1F4B4C] group-hover:text-white transition-all duration-300">
+                <div className="w-12 h-12 rounded-xl bg-[#1E293B]/5 text-[#1E293B] flex items-center justify-center mb-5 group-hover:bg-[#1E293B] group-hover:text-white transition-all duration-300">
                   {f.icon}
                 </div>
-                <h3 className="font-serif text-lg font-semibold text-[#1C2321] mb-2">
+                <h3 className="font-serif text-lg font-semibold text-[#1E293B] mb-2">
                   {f.title}
                 </h3>
-                <p className="text-[#1C2321]/60 text-sm leading-relaxed">
+                <p className="text-[#1E293B]/60 text-sm leading-relaxed">
                   {f.description}
                 </p>
               </div>

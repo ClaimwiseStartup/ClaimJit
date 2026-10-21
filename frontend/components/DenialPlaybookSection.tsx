@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { IMAGES } from "./images";
+import WindowPane from "./WindowPane";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -42,7 +43,7 @@ const TIPS = [
 
 export default function DenialPlaybookSection() {
   return (
-    <section id="playbook" className="relative bg-[#0f2e2f] py-24 sm:py-32 overflow-hidden">
+    <section id="playbook" className="relative bg-[#0F172A] py-24 sm:py-32 overflow-hidden">
       {/* Faint photo texture */}
       <img
         src={IMAGES.workspace}
@@ -51,7 +52,7 @@ export default function DenialPlaybookSection() {
         loading="lazy"
         className="absolute inset-0 w-full h-full object-cover opacity-[0.08] mix-blend-luminosity"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0f2e2f] via-[#0f2e2f]/90 to-[#0f2e2f]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0F172A] via-[#0F172A]/90 to-[#0F172A]" />
 
       <div className="relative max-w-7xl mx-auto px-6">
         <motion.div
@@ -61,7 +62,7 @@ export default function DenialPlaybookSection() {
           transition={{ duration: 0.8, ease }}
           className="max-w-2xl mb-14"
         >
-          <span className="text-[#E0A862] text-xs font-semibold uppercase tracking-[0.2em]">Denial prevention playbook</span>
+          <span className="text-[#5EEAD4] text-xs font-semibold uppercase tracking-[0.2em]">Denial prevention playbook</span>
           <h2 className="font-serif text-4xl sm:text-5xl font-semibold text-white mt-4 leading-tight">
             The denial codes we stop before the payer sends them.
           </h2>
@@ -74,8 +75,13 @@ export default function DenialPlaybookSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.9, ease }}
-            className="rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur overflow-hidden"
           >
+            <WindowPane
+              title="Denial Monitor · 835 Remittance"
+              icon="pulse"
+              tone="dark"
+              meta={<span className="font-mono text-[10px] text-[#FCD34D]/80">6 watched CARCs</span>}
+            >
             <div className="grid grid-cols-[64px_1fr] sm:grid-cols-[72px_1fr_1.2fr] gap-4 px-6 py-3.5 border-b border-white/10 text-[10px] uppercase tracking-[0.16em] text-white/40 font-semibold">
               <span>CARC</span>
               <span>What the payer says</span>
@@ -90,11 +96,12 @@ export default function DenialPlaybookSection() {
                 transition={{ duration: 0.5, delay: i * 0.06, ease }}
                 className="grid grid-cols-[64px_1fr] sm:grid-cols-[72px_1fr_1.2fr] gap-x-4 gap-y-1 px-6 py-4 border-b border-white/[0.06] last:border-0 hover:bg-white/[0.03] transition-colors"
               >
-                <span className="font-mono text-xl text-[#E0A862]">{c.code}</span>
+                <span className="font-mono text-[15px] font-semibold text-[#FCD34D] bg-[#B45309]/20 ring-1 ring-inset ring-[#F59E0B]/25 rounded px-2 py-1 self-center justify-self-start">{c.code}</span>
                 <span className="text-[14px] text-white/85 self-center">{c.name}</span>
                 <span className="col-start-2 sm:col-start-3 text-[13px] text-white/50 self-center">{c.check}</span>
               </motion.div>
             ))}
+            </WindowPane>
           </motion.div>
 
           {/* Coding calendar */}
@@ -103,26 +110,26 @@ export default function DenialPlaybookSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.9, delay: 0.1, ease }}
-            className="rounded-3xl bg-[#FAF8F4] p-7"
           >
-            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8A5A24]">Coding calendar</p>
-            <h3 className="font-serif text-2xl font-semibold text-[#1C2321] mt-2">Code sets change. Prevo keeps up.</h3>
-            <p className="text-[13px] text-[#1C2321]/55 mt-2 leading-relaxed">
+            <WindowPane title="Code Set Calendar" icon="calendar" className="h-full" bodyClassName="p-7 bg-[#F8FAFC]">
+            <h3 className="font-serif text-2xl font-semibold text-[#1E293B]">Code sets change. Prevo keeps up.</h3>
+            <p className="text-[13px] text-[#1E293B]/55 mt-2 leading-relaxed">
               A code that was valid last quarter can reject today. Every claim is validated against the
               code set in effect on its date of service.
             </p>
             <div className="mt-6 relative">
-              <div className="absolute left-[7px] top-2 bottom-2 w-px bg-[#1C2321]/10" />
+              <div className="absolute left-[7px] top-2 bottom-2 w-px bg-[#1E293B]/10" />
               {CALENDAR.map((c) => (
                 <div key={c.when} className="relative flex gap-4 py-2.5">
-                  <span className="mt-1.5 w-[15px] h-[15px] rounded-full border-2 border-[#C9873A] bg-[#FAF8F4] shrink-0" />
+                  <span className="mt-1.5 w-[15px] h-[15px] rounded-full border-2 border-[#0F766E] bg-[#F8FAFC] shrink-0" />
                   <div>
-                    <p className="font-mono text-[12px] font-semibold text-[#1F4B4C]">{c.when}</p>
-                    <p className="text-[13px] text-[#1C2321]/65">{c.what}</p>
+                    <p className="font-mono text-[12px] font-semibold text-[#1E293B]">{c.when}</p>
+                    <p className="text-[13px] text-[#1E293B]/65">{c.what}</p>
                   </div>
                 </div>
               ))}
             </div>
+            </WindowPane>
           </motion.div>
         </div>
 
@@ -135,9 +142,9 @@ export default function DenialPlaybookSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.7, delay: i * 0.08, ease }}
-              className="rounded-2xl border border-white/10 p-6 hover:border-[#C9873A]/40 transition-colors"
+              className="rounded-xl border border-white/10 border-l-[3px] border-l-[#F59E0B]/70 bg-white/[0.02] p-6 hover:bg-white/[0.04] transition-colors"
             >
-              <span className="font-mono text-[11px] text-[#E0A862]">Audit tip {String(i + 1).padStart(2, "0")}</span>
+              <span className="font-mono text-[11px] text-[#FCD34D]">Audit risk {String(i + 1).padStart(2, "0")}</span>
               <h4 className="text-white font-semibold mt-3 leading-snug">{t.title}</h4>
               <p className="text-white/50 text-[13.5px] mt-2 leading-relaxed">{t.body}</p>
             </motion.div>

@@ -35,7 +35,7 @@ function AnimatedCounter({
 }) {
   return (
     <motion.span
-      className="font-serif text-5xl sm:text-6xl lg:text-7xl font-bold text-[#1F4B4C]"
+      className="font-serif text-5xl sm:text-6xl lg:text-7xl font-bold text-[#1E293B]"
       initial={{ opacity: 0, y: 20 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6 }}
@@ -50,9 +50,9 @@ export default function StatsSection() {
   const inView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section className="relative py-24 sm:py-32 bg-[#FAF8F4]" ref={ref}>
+    <section className="relative py-24 sm:py-32 bg-[#F8FAFC]" ref={ref}>
       {/* Subtle top divider */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#1F4B4C]/10 to-transparent" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#1E293B]/10 to-transparent" />
 
       <div className="max-w-7xl mx-auto px-6">
         <motion.div
@@ -61,10 +61,10 @@ export default function StatsSection() {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <span className="text-[#C9873A] text-sm font-semibold uppercase tracking-widest">
+          <span className="text-[#0F766E] text-sm font-semibold uppercase tracking-widest">
             By the Numbers
           </span>
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1C2321] mt-3">
+          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1E293B] mt-3">
             The Denial Problem Is Massive
           </h2>
         </motion.div>
@@ -73,16 +73,16 @@ export default function StatsSection() {
           {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
-              className="text-center p-6 rounded-2xl bg-white/60 backdrop-blur-sm border border-[#1F4B4C]/5 hover:border-[#C9873A]/20 transition-all hover:shadow-lg hover:shadow-[#1F4B4C]/5"
+              className="text-center p-6 rounded-2xl bg-white/60 backdrop-blur-sm border border-[#1E293B]/5 hover:border-[#0F766E]/20 transition-all hover:shadow-lg hover:shadow-[#1E293B]/5"
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: i * 0.1 }}
             >
               <AnimatedCounter value={stat.value} inView={inView} />
-              <p className="text-[#1C2321]/70 text-sm mt-3 leading-relaxed">
+              <p className="text-[#1E293B]/70 text-sm mt-3 leading-relaxed">
                 {stat.label}
               </p>
-              <p className="text-[#1C2321]/30 text-xs mt-2 italic">
+              <p className="text-[#1E293B]/30 text-xs mt-2 italic">
                 {stat.note}
               </p>
             </motion.div>

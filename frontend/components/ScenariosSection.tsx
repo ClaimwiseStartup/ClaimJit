@@ -2,14 +2,15 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import WindowPane, { StatusPill } from "./WindowPane";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 // Highlight colors link a phrase in the note to the claim line it supports
 const HL: Record<string, { mark: string; dot: string }> = {
-  a: { mark: "bg-[#C9873A]/18", dot: "bg-[#C9873A]" },
-  b: { mark: "bg-[#1F4B4C]/12", dot: "bg-[#1F4B4C]" },
-  c: { mark: "bg-[#5C8558]/20", dot: "bg-[#5C8558]" },
+  a: { mark: "bg-[#0F766E]/[0.13] decoration-[#0F766E]", dot: "bg-[#0F766E]" },
+  b: { mark: "bg-[#1E293B]/[0.08] decoration-[#1E293B]", dot: "bg-[#1E293B]" },
+  c: { mark: "bg-[#B45309]/[0.10] decoration-[#B45309]", dot: "bg-[#B45309]" },
 };
 
 type Seg = { t: string; h?: keyof typeof HL };
@@ -134,110 +135,154 @@ const SCENARIOS: Scenario[] = [
     ],
     human: "Front desk: let the patient know the problem-visit portion may carry a copay or coinsurance.",
   },
+  {
+    id: "appendectomy",
+    tab: "Operative note",
+    specialty: "General surgery",
+    encounter: "Outpatient surgery · Operative report",
+    note: [
+      { t: "Preop dx: acute appendicitis. " },
+      { t: "Postop dx: acute appendicitis with localized peritonitis, no perforation or gangrene", h: "a" },
+      { t: ". Procedure: " },
+      { t: "laparoscopic appendectomy", h: "b" },
+      { t: ". " },
+      { t: "Diagnostic laparoscopy performed first to confirm", h: "c" },
+      { t: "; inflamed appendix with localized purulent fluid in RLQ, no perforation. Appendix divided with endoscopic stapler and sent to pathology." },
+    ],
+    submitted: [
+      { code: "44970", dx: "K35.80", desc: "Laparoscopic appendectomy" },
+      { code: "49320", dx: "K35.80", desc: "Diagnostic laparoscopy" },
+    ],
+    outcome: {
+      label: "Line denied",
+      code: "CARC 97",
+      detail: "Diagnostic laparoscopy is bundled into the surgical laparoscopy, and K35.80 ignores the documented peritonitis.",
+    },
+    corrected: [{ code: "44970", dx: "K35.30", desc: "Lap appendectomy · acute appendicitis w/ localized peritonitis", h: "b" }],
+    why: [
+      "A diagnostic laparoscopy is always included in a surgical laparoscopy of the same area, so 49320 comes off the claim.",
+      "Code from the postoperative diagnosis. Localized peritonitis without perforation or gangrene is K35.30, not the unspecified K35.80.",
+      "44970 carries a 90-day global period. Routine post-op visits aren't billable; an unrelated visit in that window needs modifier 24.",
+    ],
+    human: "Coder: reconcile with the pathology report. If it shows gangrene or perforation, update to K35.31 or K35.32 before submitting.",
+  },
 ];
 
-function ClaimLines({ lines, tone }: { lines: Line[]; tone: "bad" | "good" }) {
+function ClaimTable({ lines, tone }: { lines: Line[]; tone: "bad" | "good" }) {
+  const good = tone === "good";
   return (
-    <div className="divide-y divide-[#1C2321]/[0.06]">
-      {lines.map((l, i) => (
-        <div key={i} className="grid grid-cols-[64px_1fr] sm:grid-cols-[72px_120px_1fr] gap-x-3 gap-y-0.5 py-2.5 items-center">
-          <div className="flex items-center gap-1.5">
-            {l.h && <span className={`w-1.5 h-1.5 rounded-full ${HL[l.h].dot}`} />}
-            <span className={`font-mono text-[13px] font-semibold ${tone === "good" ? "text-[#1F4B4C]" : "text-[#1C2321]/55"}`}>
-              {l.code || "·"}
-            </span>
-            {l.mod && (
-              <span className="font-mono text-[10px] text-[#C9873A] bg-[#C9873A]/10 rounded px-1 py-0.5">
-                {l.mod.startsWith("×") ? l.mod : `-${l.mod}`}
+    <table className="w-full text-left">
+      <thead>
+        <tr className="text-[9.5px] uppercase tracking-[0.12em] text-[#94A3B8]">
+          <th className="font-semibold py-1.5 pr-3 w-[92px]">CPT/HCPCS</th>
+          <th className="font-semibold py-1.5 pr-3 w-[118px]">ICD-10-CM</th>
+          <th className="font-semibold py-1.5 hidden sm:table-cell">Description</th>
+        </tr>
+      </thead>
+      <tbody className="divide-y divide-[#E2E8F0]">
+        {lines.map((l, i) => (
+          <tr key={i} className="align-top">
+            <td className="py-2.5 pr-3">
+              <span className="flex items-center gap-1.5">
+                {l.h && <span className={`w-1.5 h-1.5 rounded-full ${HL[l.h].dot}`} />}
+                <span className={`font-mono text-[13px] font-semibold ${good ? "text-[#0F766E]" : "text-[#64748B]"}`}>{l.code || "·"}</span>
+                {l.mod && (
+                  <span className="font-mono text-[10px] text-[#B45309] bg-[#B45309]/10 rounded px-1 py-0.5">
+                    {l.mod.startsWith("×") ? l.mod : `-${l.mod}`}
+                  </span>
+                )}
               </span>
-            )}
-          </div>
-          <span className={`font-mono text-[12px] ${tone === "good" ? "text-[#1C2321]/80" : "text-[#1C2321]/45 line-through decoration-[#b54a3a]/40"}`}>
-            {l.dx}
-          </span>
-          <span className="col-span-2 sm:col-span-1 text-[12px] text-[#1C2321]/50">{l.desc}</span>
-        </div>
-      ))}
-    </div>
+            </td>
+            <td className={`py-2.5 pr-3 font-mono text-[12px] ${good ? "text-[#1E293B]" : "text-[#991B1B]/70 line-through decoration-[#991B1B]/40"}`}>{l.dx}</td>
+            <td className="py-2.5 text-[12px] text-[#64748B] hidden sm:table-cell">{l.desc}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 
 export default function ScenariosSection() {
   const [active, setActive] = useState(0);
   const s = SCENARIOS[active];
+  const isOp = s.id === "appendectomy";
 
   return (
-    <section id="scenarios" className="bg-[#F1EEE7] py-24 sm:py-32">
+    <section id="scenarios" className="bg-[#F1F5F9] py-24 sm:py-32">
       <div className="max-w-7xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.8, ease }}
-          className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-12"
+          className="max-w-2xl mb-10"
         >
-          <div className="max-w-2xl">
-            <span className="text-[#C9873A] text-xs font-semibold uppercase tracking-[0.2em]">Real coding scenarios</span>
-            <h2 className="font-serif text-4xl sm:text-5xl font-semibold text-[#1C2321] mt-4 leading-tight">
-              From the progress note to a claim that gets paid.
-            </h2>
-            <p className="mt-5 text-[#1C2321]/60 leading-relaxed">
-              Three encounters small practices see every week. Each one shows what usually gets submitted,
-              why the payer pushes back, and the claim Prevo builds from the same note.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {SCENARIOS.map((sc, i) => (
-              <button
-                key={sc.id}
-                onClick={() => setActive(i)}
-                className={`relative px-4 py-2.5 rounded-full text-sm font-medium transition-colors cursor-pointer ${
-                  i === active ? "text-white" : "text-[#1C2321]/65 hover:text-[#1C2321] bg-white/60"
-                }`}
-              >
-                {i === active && (
-                  <motion.span layoutId="scenario-pill" className="absolute inset-0 rounded-full bg-[#1F4B4C]" transition={{ duration: 0.5, ease }} />
-                )}
-                <span className="relative">{sc.tab}</span>
-              </button>
-            ))}
-          </div>
+          <span className="text-[#0F766E] text-xs font-semibold uppercase tracking-[0.2em]">Real coding scenarios</span>
+          <h2 className="font-serif text-4xl sm:text-5xl font-semibold text-[#1E293B] mt-4 leading-tight">
+            From the clinical note to a claim that gets paid.
+          </h2>
+          <p className="mt-5 text-[#475569] leading-relaxed">
+            Four encounters independent practices see every week. Each shows what usually gets submitted,
+            why the payer pushes back, and the claim Prevo builds from the same documentation.
+          </p>
         </motion.div>
+
+        {/* Encounter queue, like a coder's worklist */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-6" role="tablist">
+          {SCENARIOS.map((sc, i) => (
+            <button
+              key={sc.id}
+              role="tab"
+              aria-selected={i === active}
+              onClick={() => setActive(i)}
+              className={`relative text-left rounded-lg px-4 py-3 border transition-all cursor-pointer ${
+                i === active
+                  ? "bg-white border-[#0F766E]/40 shadow-[0_8px_24px_-16px_rgba(15,118,110,0.6)]"
+                  : "bg-white/50 border-[#CBD5E1]/60 hover:bg-white"
+              }`}
+            >
+              {i === active && <motion.span layoutId="scn-bar" className="absolute left-0 top-2 bottom-2 w-[3px] rounded-r bg-[#0F766E]" />}
+              <span className="block font-mono text-[10px] text-[#94A3B8]">ENC-{48213 + i * 117}</span>
+              <span className={`block text-[13.5px] font-semibold mt-0.5 ${i === active ? "text-[#1E293B]" : "text-[#475569]"}`}>{sc.tab}</span>
+              <span className="block text-[11.5px] text-[#94A3B8] mt-0.5">{sc.specialty}</span>
+            </button>
+          ))}
+        </div>
 
         <AnimatePresence mode="wait">
           <motion.div
             key={s.id}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.5, ease }}
-            className="grid lg:grid-cols-[1fr_1.05fr] gap-6"
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.45, ease }}
+            className="grid lg:grid-cols-[1fr_1.05fr] gap-5"
           >
-            {/* EHR note panel */}
-            <div className="rounded-3xl bg-white border border-[#1C2321]/[0.06] shadow-[0_30px_60px_-35px_rgba(28,35,33,0.35)] overflow-hidden">
-              <div className="flex items-center justify-between px-6 py-3.5 bg-[#1F4B4C]">
-                <span className="font-mono text-[11px] tracking-wider text-white/90">PROGRESS NOTE · SIGNED</span>
-                <span className="text-[11px] text-white/55">{s.specialty}</span>
-              </div>
-              <div className="px-6 py-4 border-b border-[#1C2321]/[0.06] grid grid-cols-3 gap-4 text-[11px]">
+            <WindowPane
+              title="Clinical Documentation"
+              icon="doc"
+              tabs={isOp ? ["Op report", "Pathology"] : ["Progress note", "Orders"]}
+              meta={<StatusPill tone="ok">Signed</StatusPill>}
+            >
+              <div className="px-6 py-4 border-b border-[#E2E8F0] bg-[#F8FAFC] grid grid-cols-3 gap-4 text-[11px]">
                 <div>
-                  <p className="text-[#1C2321]/35 uppercase tracking-wider text-[9px]">Patient</p>
-                  <p className="font-mono text-[#1C2321]/70 mt-0.5">MRN ••••{4821 + active * 137}</p>
+                  <p className="text-[#94A3B8] uppercase tracking-wider text-[9px]">Patient</p>
+                  <p className="font-mono text-[#334155] mt-0.5">MRN ••••{4821 + active * 137}</p>
                 </div>
                 <div>
-                  <p className="text-[#1C2321]/35 uppercase tracking-wider text-[9px]">Encounter</p>
-                  <p className="text-[#1C2321]/70 mt-0.5">{s.encounter.split(" · ")[1]}</p>
+                  <p className="text-[#94A3B8] uppercase tracking-wider text-[9px]">Setting</p>
+                  <p className="text-[#334155] mt-0.5">{s.encounter.split(" · ")[0]}</p>
                 </div>
                 <div>
-                  <p className="text-[#1C2321]/35 uppercase tracking-wider text-[9px]">Status</p>
-                  <p className="text-[#3d6b3a] mt-0.5">Ready to code</p>
+                  <p className="text-[#94A3B8] uppercase tracking-wider text-[9px]">Document</p>
+                  <p className="text-[#334155] mt-0.5">{s.encounter.split(" · ")[1]}</p>
                 </div>
               </div>
               <div className="px-6 py-6">
-                <p className="text-[15px] leading-[1.85] text-[#1C2321]/80 font-[family-name:var(--font-serif)]">
+                <p className="text-[15px] leading-[1.9] text-[#334155] font-[family-name:var(--font-serif)]">
                   {s.note.map((seg, i) =>
                     seg.h ? (
-                      <mark key={i} className={`${HL[seg.h].mark} text-[#1C2321] rounded px-1 py-0.5`}>
+                      <mark key={i} className={`${HL[seg.h].mark} text-[#1E293B] rounded-sm px-1 py-0.5 underline decoration-2 underline-offset-4`}>
                         {seg.t}
                       </mark>
                     ) : (
@@ -245,48 +290,52 @@ export default function ScenariosSection() {
                     )
                   )}
                 </p>
-                <p className="mt-6 text-[11px] text-[#1C2321]/35">De-identified example. Highlights link each phrase to the claim line it supports.</p>
+                <p className="mt-6 pt-4 border-t border-dashed border-[#E2E8F0] text-[11px] text-[#94A3B8]">
+                  De-identified example · underlined phrases map to the claim lines that cite them
+                </p>
               </div>
-            </div>
+            </WindowPane>
 
-            {/* Claim comparison */}
-            <div className="space-y-4">
-              <div className="rounded-2xl bg-white border border-[#b54a3a]/15 p-5">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#1C2321]/45">As usually submitted</p>
-                  <span className="text-[11px] font-semibold rounded-full px-2.5 py-1 bg-[#b54a3a]/10 text-[#9a3d2f]">
-                    {s.outcome.label} · {s.outcome.code}
-                  </span>
+            <div className="space-y-5">
+              <WindowPane
+                title="Claim Scrubber · 837P"
+                icon="claim"
+                meta={<StatusPill tone="alert">{s.outcome.label}</StatusPill>}
+                bodyClassName="divide-y divide-[#E2E8F0]"
+              >
+                <div className="px-5 py-4">
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#64748B]">As usually submitted</p>
+                    <span className="font-mono text-[11px] text-[#991B1B]">{s.outcome.code}</span>
+                  </div>
+                  <ClaimTable lines={s.submitted} tone="bad" />
+                  <div className="mt-3 rounded-md border-l-[3px] border-[#991B1B] bg-[#991B1B]/[0.05] px-3 py-2 text-[12.5px] text-[#7F1D1D] leading-relaxed">
+                    {s.outcome.detail}
+                  </div>
                 </div>
-                <ClaimLines lines={s.submitted} tone="bad" />
-                <p className="mt-3 text-[12.5px] text-[#9a3d2f]/85 leading-relaxed">{s.outcome.detail}</p>
-              </div>
-
-              <div className="rounded-2xl bg-white border border-[#5C8558]/25 p-5 shadow-[0_20px_40px_-30px_rgba(92,133,88,0.6)]">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#1C2321]/45">Prevo corrected claim</p>
-                  <span className="text-[11px] font-semibold rounded-full px-2.5 py-1 bg-[#5C8558]/15 text-[#3d6b3a]">✓ Clean</span>
+                <div className="px-5 py-4 bg-[#0F766E]/[0.03]">
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#0F766E]">Prevo corrected claim</p>
+                    <StatusPill tone="ok">Clean</StatusPill>
+                  </div>
+                  <ClaimTable lines={s.corrected} tone="good" />
                 </div>
-                <ClaimLines lines={s.corrected} tone="good" />
-              </div>
+              </WindowPane>
 
-              <div className="rounded-2xl bg-[#1F4B4C] text-white p-6">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#E0A862] mb-3">Why it changed</p>
+              <WindowPane title="Coder Notes" icon="book" tone="dark" bodyClassName="p-5 bg-[#1E293B]">
                 <ul className="space-y-3">
                   {s.why.map((w, i) => (
                     <li key={i} className="flex gap-3 text-[13.5px] text-white/80 leading-relaxed">
-                      <span className="font-mono text-[11px] text-white/35 mt-0.5">{String(i + 1).padStart(2, "0")}</span>
+                      <span className="font-mono text-[11px] text-[#5EEAD4] mt-0.5">{String(i + 1).padStart(2, "0")}</span>
                       {w}
                     </li>
                   ))}
                 </ul>
-                <div className="mt-5 pt-4 border-t border-white/10 flex gap-3 items-start">
-                  <span className="text-[9px] font-mono uppercase tracking-wider bg-[#C9873A]/25 text-[#F0C38A] rounded px-2 py-1 shrink-0">
-                    Human step
-                  </span>
-                  <p className="text-[13px] text-white/70">{s.human}</p>
+                <div className="mt-5 rounded-md border-l-[3px] border-[#F59E0B] bg-[#B45309]/20 px-3 py-2.5 flex gap-3 items-start">
+                  <span className="text-[9px] font-mono uppercase tracking-wider text-[#FCD34D] shrink-0 mt-0.5">Human step</span>
+                  <p className="text-[13px] text-white/80">{s.human}</p>
                 </div>
-              </div>
+              </WindowPane>
             </div>
           </motion.div>
         </AnimatePresence>

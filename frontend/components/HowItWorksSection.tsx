@@ -10,16 +10,16 @@ const steps = [
     description:
       "Copy the clinical documentation from your visit — the history, exam findings, and treatment plan.",
     visual: (
-      <div className="bg-[#0f2e2f] rounded-xl p-4 font-mono text-xs text-white/70 leading-relaxed">
-        <div className="text-[#C9873A] mb-2">// Clinical Note</div>
+      <div className="bg-[#0F172A] rounded-xl p-4 font-mono text-xs text-white/70 leading-relaxed">
+        <div className="text-[#0F766E] mb-2">// Clinical Note</div>
         <div className="text-white/50">
           Patient presents with persistent cough x 3 weeks, productive with
           yellow sputum. Bilateral rhonchi on auscultation. CXR shows right
           lower lobe infiltrate...
         </div>
         <div className="mt-2 h-px bg-white/10" />
-        <div className="mt-2 flex items-center gap-2 text-[#5C8558]">
-          <span className="w-2 h-2 rounded-full bg-[#5C8558]" />
+        <div className="mt-2 flex items-center gap-2 text-[#0F766E]">
+          <span className="w-2 h-2 rounded-full bg-[#0F766E]" />
           Ready to analyze
         </div>
       </div>
@@ -31,13 +31,13 @@ const steps = [
     description:
       "Choose from Medicare, Medicaid, Blue Cross, Aetna, UnitedHealthcare, Cigna, or other major payers.",
     visual: (
-      <div className="bg-[#0f2e2f] rounded-xl p-4 space-y-2">
+      <div className="bg-[#0F172A] rounded-xl p-4 space-y-2">
         {["Medicare", "Blue Cross Blue Shield", "Aetna"].map((p, i) => (
           <div
             key={p}
             className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
               i === 0
-                ? "bg-[#C9873A] text-white"
+                ? "bg-[#0F766E] text-white"
                 : "bg-white/5 text-white/50 border border-white/5"
             }`}
           >
@@ -56,15 +56,15 @@ const steps = [
     description:
       "Prevo's AI extracts codes, cross-references payer rules, identifies risks, and suggests corrections.",
     visual: (
-      <div className="bg-[#0f2e2f] rounded-xl p-4 space-y-3">
+      <div className="bg-[#0F172A] rounded-xl p-4 space-y-3">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[#1F4B4C] flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-[#1E293B] flex items-center justify-center">
             <svg
               width="14"
               height="14"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#C9873A"
+              stroke="#0F766E"
               strokeWidth="2"
             >
               <path d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -75,17 +75,17 @@ const steps = [
               Processing claim...
             </div>
             <div className="mt-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
-              <div className="h-full w-3/4 rounded-full bg-gradient-to-r from-[#C9873A] to-[#5C8558]" />
+              <div className="h-full w-3/4 rounded-full bg-gradient-to-r from-[#0F766E] to-[#0F766E]" />
             </div>
           </div>
         </div>
-        <div className="text-[#5C8558] text-xs flex items-center gap-1.5">
+        <div className="text-[#0F766E] text-xs flex items-center gap-1.5">
           <span>&#10003;</span> ICD-10 codes validated
         </div>
-        <div className="text-[#5C8558] text-xs flex items-center gap-1.5">
+        <div className="text-[#0F766E] text-xs flex items-center gap-1.5">
           <span>&#10003;</span> CPT codes validated
         </div>
-        <div className="text-[#C9873A] text-xs flex items-center gap-1.5">
+        <div className="text-[#0F766E] text-xs flex items-center gap-1.5">
           <span>&#9888;</span> 1 issue found — see correction
         </div>
       </div>
@@ -97,9 +97,9 @@ const steps = [
     description:
       "Get corrected codes with evidence citations, human actions required, and a clean claim ready to submit.",
     visual: (
-      <div className="bg-[#0f2e2f] rounded-xl p-4">
+      <div className="bg-[#0F172A] rounded-xl p-4">
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-6 h-6 rounded-full bg-[#5C8558] flex items-center justify-center text-white text-xs font-bold">
+          <div className="w-6 h-6 rounded-full bg-[#0F766E] flex items-center justify-center text-white text-xs font-bold">
             &#10003;
           </div>
           <span className="text-white/80 text-sm font-medium">
@@ -117,7 +117,7 @@ const steps = [
           </div>
           <div className="flex justify-between text-white/50">
             <span>Denial Risk:</span>
-            <span className="text-[#5C8558] font-semibold">Low</span>
+            <span className="text-[#0F766E] font-semibold">Low</span>
           </div>
         </div>
       </div>
@@ -132,7 +132,7 @@ export default function HowItWorksSection() {
   return (
     <section
       id="how-it-works"
-      className="relative py-24 sm:py-32 bg-[#FAF8F4]"
+      className="relative py-24 sm:py-32 bg-[#F8FAFC]"
       ref={ref}
     >
       <div className="max-w-7xl mx-auto px-6">
@@ -142,13 +142,13 @@ export default function HowItWorksSection() {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <span className="text-[#C9873A] text-sm font-semibold uppercase tracking-widest">
+          <span className="text-[#0F766E] text-sm font-semibold uppercase tracking-widest">
             How It Works
           </span>
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1C2321] mt-3">
+          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1E293B] mt-3">
             From Clinical Note to Clean Claim
           </h2>
-          <p className="text-[#1C2321]/60 mt-4 max-w-2xl mx-auto">
+          <p className="text-[#1E293B]/60 mt-4 max-w-2xl mx-auto">
             Four simple steps. No integrations, no onboarding calls, no
             contracts.
           </p>
@@ -168,15 +168,15 @@ export default function HowItWorksSection() {
               {/* Text */}
               <div className="flex-1">
                 <div className="flex items-center gap-4 mb-4">
-                  <span className="text-5xl font-serif font-bold text-[#1F4B4C]/10">
+                  <span className="text-5xl font-serif font-bold text-[#1E293B]/10">
                     {step.num}
                   </span>
-                  <div className="h-px flex-1 bg-[#1F4B4C]/10" />
+                  <div className="h-px flex-1 bg-[#1E293B]/10" />
                 </div>
-                <h3 className="font-serif text-2xl font-bold text-[#1C2321] mb-3">
+                <h3 className="font-serif text-2xl font-bold text-[#1E293B] mb-3">
                   {step.title}
                 </h3>
-                <p className="text-[#1C2321]/60 leading-relaxed">
+                <p className="text-[#1E293B]/60 leading-relaxed">
                   {step.description}
                 </p>
               </div>

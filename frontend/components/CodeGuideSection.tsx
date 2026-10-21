@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import WindowPane, { StatusPill } from "./WindowPane";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -57,6 +58,13 @@ const ROWS: Row[] = [
     pitfall: "Unspecified laterality (M25.469) when the note names the side.",
   },
   {
+    kind: "Diagnosis",
+    item: "Acute appendicitis, localized peritonitis",
+    code: "K35.30–K35.33",
+    guideline: "Code from the postoperative diagnosis: .30 none, .31 with gangrene, .32/.33 perforated without/with abscess.",
+    pitfall: "Defaulting to K35.80 (unspecified) when the op note describes the peritonitis.",
+  },
+  {
     kind: "Procedure",
     item: "Arthrocentesis / injection, major joint",
     code: "20610 / 20611",
@@ -103,10 +111,10 @@ const ROWS: Row[] = [
 const KINDS = ["All", "Diagnosis", "Procedure", "Modifier", "Drug"] as const;
 
 const KIND_STYLE: Record<Row["kind"], string> = {
-  Diagnosis: "bg-[#1F4B4C]/10 text-[#1F4B4C]",
-  Procedure: "bg-[#C9873A]/12 text-[#8A5A24]",
-  Modifier: "bg-[#5C8558]/15 text-[#3d6b3a]",
-  Drug: "bg-[#6B5B95]/12 text-[#54467a]",
+  Diagnosis: "bg-[#1E293B]/10 text-[#1E293B]",
+  Procedure: "bg-[#0F766E]/12 text-[#B45309]",
+  Modifier: "bg-[#0F766E]/15 text-[#115E59]",
+  Drug: "bg-[#475569]/12 text-[#334155]",
 };
 
 export default function CodeGuideSection() {
@@ -114,7 +122,7 @@ export default function CodeGuideSection() {
   const rows = filter === "All" ? ROWS : ROWS.filter((r) => r.kind === filter);
 
   return (
-    <section id="code-guide" className="bg-[#FAF8F4] py-24 sm:py-32">
+    <section id="code-guide" className="bg-[#F8FAFC] py-24 sm:py-32">
       <div className="max-w-7xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -124,11 +132,11 @@ export default function CodeGuideSection() {
           className="grid lg:grid-cols-[1fr_auto] gap-8 items-end mb-10"
         >
           <div className="max-w-2xl">
-            <span className="text-[#C9873A] text-xs font-semibold uppercase tracking-[0.2em]">Code guide</span>
-            <h2 className="font-serif text-4xl sm:text-5xl font-semibold text-[#1C2321] mt-4 leading-tight">
+            <span className="text-[#0F766E] text-xs font-semibold uppercase tracking-[0.2em]">Code guide</span>
+            <h2 className="font-serif text-4xl sm:text-5xl font-semibold text-[#1E293B] mt-4 leading-tight">
               The rules Prevo checks on every claim.
             </h2>
-            <p className="mt-5 text-[#1C2321]/60 leading-relaxed">
+            <p className="mt-5 text-[#1E293B]/60 leading-relaxed">
               A working reference of the specificity and modifier rules behind the most common
               outpatient denials. Prevo applies these automatically; this is what it's looking for.
             </p>
@@ -140,8 +148,8 @@ export default function CodeGuideSection() {
                 onClick={() => setFilter(k)}
                 className={`px-4 py-2 rounded-full text-sm transition-all cursor-pointer border ${
                   filter === k
-                    ? "bg-[#1C2321] text-white border-[#1C2321]"
-                    : "bg-white text-[#1C2321]/60 border-[#1C2321]/10 hover:border-[#1C2321]/25"
+                    ? "bg-[#1E293B] text-white border-[#1E293B]"
+                    : "bg-white text-[#1E293B]/60 border-[#1E293B]/10 hover:border-[#1E293B]/25"
                 }`}
               >
                 {k}
@@ -155,17 +163,17 @@ export default function CodeGuideSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.9, ease }}
-          className="rounded-3xl bg-white border border-[#1C2321]/[0.07] shadow-[0_30px_60px_-40px_rgba(28,35,33,0.35)] overflow-hidden"
-        >
+          >
+        <WindowPane title="Code Reference · ICD-10-CM · CPT · HCPCS" icon="book" tabs={["Rules", "Edits", "Payer policy"]} meta={<StatusPill tone="info">{rows.length} rules</StatusPill>}>
           {/* Desktop header */}
-          <div className="hidden lg:grid grid-cols-[1.3fr_0.8fr_1.6fr_1.6fr] gap-6 px-7 py-4 bg-[#1F4B4C] text-[10px] uppercase tracking-[0.16em] text-white/60 font-semibold">
+          <div className="hidden lg:grid grid-cols-[1.3fr_0.8fr_1.6fr_1.6fr] gap-6 px-7 py-3 bg-[#F8FAFC] border-b border-[#E2E8F0] text-[10px] uppercase tracking-[0.14em] text-[#64748B] font-semibold">
             <span>Diagnosis / procedure</span>
             <span>Code</span>
             <span>Guideline & specificity</span>
             <span>Common pitfall</span>
           </div>
 
-          <div className="divide-y divide-[#1C2321]/[0.06]">
+          <div className="divide-y divide-[#1E293B]/[0.06]">
             <AnimatePresence initial={false}>
               {rows.map((r) => (
                 <motion.div
@@ -175,17 +183,17 @@ export default function CodeGuideSection() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="grid grid-cols-1 lg:grid-cols-[1.3fr_0.8fr_1.6fr_1.6fr] gap-2 lg:gap-6 px-6 lg:px-7 py-5 hover:bg-[#FAF8F4] transition-colors"
+                  className="grid grid-cols-1 lg:grid-cols-[1.3fr_0.8fr_1.6fr_1.6fr] gap-2 lg:gap-6 px-6 lg:px-7 py-5 hover:bg-[#F8FAFC] transition-colors"
                 >
                   <div>
                     <span className={`inline-block text-[9px] font-semibold uppercase tracking-wider rounded px-1.5 py-0.5 mb-1.5 ${KIND_STYLE[r.kind]}`}>
                       {r.kind}
                     </span>
-                    <p className="text-[14px] font-medium text-[#1C2321]">{r.item}</p>
+                    <p className="text-[14px] font-medium text-[#1E293B]">{r.item}</p>
                   </div>
-                  <p className="font-mono text-[14px] font-semibold text-[#1F4B4C] lg:pt-5">{r.code}</p>
-                  <p className="text-[13px] text-[#1C2321]/65 leading-relaxed lg:pt-5">{r.guideline}</p>
-                  <p className="text-[13px] text-[#9a3d2f]/85 leading-relaxed lg:pt-5 flex gap-2">
+                  <p className="lg:pt-5"><span className="font-mono text-[13px] font-semibold text-[#0F766E] bg-[#0F766E]/[0.07] ring-1 ring-inset ring-[#0F766E]/15 rounded px-2 py-1">{r.code}</span></p>
+                  <p className="text-[13px] text-[#1E293B]/65 leading-relaxed lg:pt-5">{r.guideline}</p>
+                  <p className="text-[13px] text-[#991B1B] leading-relaxed lg:pt-5 flex gap-2 lg:border-l-2 lg:border-[#991B1B]/25 lg:pl-3">
                     <span className="lg:hidden font-semibold">Pitfall:</span>
                     {r.pitfall}
                   </p>
@@ -193,9 +201,10 @@ export default function CodeGuideSection() {
               ))}
             </AnimatePresence>
           </div>
+        </WindowPane>
         </motion.div>
 
-        <p className="mt-5 text-[12px] text-[#1C2321]/40 max-w-3xl">
+        <p className="mt-5 text-[12px] text-[#1E293B]/40 max-w-3xl">
           Reference only, not a substitute for the current code books or payer policy. CPT® is a registered trademark of the American Medical Association.
         </p>
       </div>

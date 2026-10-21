@@ -31,26 +31,26 @@ function ChartReviewCard() {
       initial={{ opacity: 0, y: 40, rotate: 1.5 }}
       animate={{ opacity: 1, y: 0, rotate: 0 }}
       transition={{ duration: 1.1, delay: 0.7, ease }}
-      className="w-[420px] rounded-2xl bg-[#FAF8F4]/95 backdrop-blur-xl shadow-[0_40px_80px_-20px_rgba(0,0,0,0.55)] border border-white/40 overflow-hidden"
+      className="w-[420px] rounded-xl bg-[#F8FAFC]/95 backdrop-blur-xl shadow-[0_40px_80px_-20px_rgba(0,0,0,0.55)] border border-white/40 overflow-hidden"
     >
       {/* EHR header */}
-      <div className="flex items-center justify-between px-5 py-3 bg-[#1F4B4C] text-white">
+      <div className="flex items-center justify-between px-5 py-3 bg-[#1E293B] text-white">
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#C9873A] animate-pulse" />
+          <span className="w-2 h-2 rounded-full bg-[#0F766E] animate-pulse" />
           <span className="font-mono text-[11px] tracking-wider">CHART REVIEW · ENC 48213</span>
         </div>
         <span className="font-mono text-[10px] text-white/60">Ortho · Est. pt</span>
       </div>
 
       {/* Note excerpt */}
-      <div className="px-5 pt-4 pb-3 border-b border-[#1C2321]/[0.07]">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#1C2321]/40 mb-2">
+      <div className="px-5 pt-4 pb-3 border-b border-[#1E293B]/[0.07]">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#1E293B]/40 mb-2">
           Progress note · Assessment & Plan
         </p>
-        <p className="text-[12.5px] leading-relaxed text-[#1C2321]/75">
-          45M, <mark className="bg-[#C9873A]/15 text-[#1C2321] rounded px-0.5">right knee pain with moderate effusion</mark>.{" "}
-          <mark className="bg-[#1F4B4C]/10 text-[#1C2321] rounded px-0.5">Aspirated and injected R knee</mark>, methylprednisolone 40 mg.{" "}
-          <mark className="bg-[#5C8558]/15 text-[#1C2321] rounded px-0.5">BP 152/96, start lisinopril</mark>.
+        <p className="text-[12.5px] leading-relaxed text-[#1E293B]/75">
+          45M, <mark className="bg-[#0F766E]/15 text-[#1E293B] rounded px-0.5">right knee pain with moderate effusion</mark>.{" "}
+          <mark className="bg-[#1E293B]/10 text-[#1E293B] rounded px-0.5">Aspirated and injected R knee</mark>, methylprednisolone 40 mg.{" "}
+          <mark className="bg-[#B45309]/10 text-[#1E293B] rounded px-0.5">BP 152/96, start lisinopril</mark>.
         </p>
       </div>
 
@@ -64,30 +64,30 @@ function ChartReviewCard() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.4, ease }}
-              className="flex items-center gap-3 rounded-lg bg-white border border-[#1C2321]/[0.06] px-3 py-2"
+              className="flex items-center gap-3 rounded-lg bg-white border border-[#1E293B]/[0.06] px-3 py-2"
             >
-              <span className="text-[9px] font-mono text-[#1C2321]/40 w-11">{c.tag}</span>
-              <span className="font-mono text-[13px] font-semibold text-[#1F4B4C]">{c.code}</span>
+              <span className="text-[9px] font-mono text-[#1E293B]/40 w-11">{c.tag}</span>
+              <span className="font-mono text-[13px] font-semibold text-[#1E293B]">{c.code}</span>
               {c.mod && (
-                <span className="font-mono text-[10px] text-[#C9873A] bg-[#C9873A]/10 rounded px-1.5 py-0.5">
+                <span className="font-mono text-[10px] text-[#B45309] bg-[#B45309]/10 rounded px-1.5 py-0.5">
                   {c.mod.startsWith("×") ? c.mod : `-${c.mod}`}
                 </span>
               )}
-              <span className="ml-auto text-[11px] text-[#1C2321]/50 truncate">{c.note}</span>
+              <span className="ml-auto text-[11px] text-[#1E293B]/50 truncate">{c.note}</span>
             </motion.div>
           ))}
         </AnimatePresence>
       </div>
 
       {/* Status */}
-      <div className="flex items-center justify-between px-5 py-3 bg-white border-t border-[#1C2321]/[0.07]">
-        <span className="text-[11px] text-[#1C2321]/50 font-mono">NCCI · payer rules · LCD</span>
+      <div className="flex items-center justify-between px-5 py-3 bg-white border-t border-[#1E293B]/[0.07]">
+        <span className="text-[11px] text-[#1E293B]/50 font-mono">NCCI · payer rules · LCD</span>
         <motion.span
           key={done ? "clean" : "review"}
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           className={`text-[11px] font-semibold rounded-full px-3 py-1 ${
-            done ? "bg-[#5C8558]/15 text-[#3d6b3a]" : "bg-[#C9873A]/12 text-[#8A5A24]"
+            done ? "bg-[#0F766E]/15 text-[#115E59]" : "bg-[#B45309]/10 text-[#B45309]"
           }`}
         >
           {done ? "✓ Clean claim" : "Reviewing…"}
@@ -105,7 +105,7 @@ export default function HeroSection() {
   const fade = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
   return (
-    <section ref={ref} className="relative h-[100svh] min-h-[720px] overflow-hidden bg-[#0f2e2f]">
+    <section ref={ref} className="relative h-[100svh] min-h-[720px] overflow-hidden bg-[#0F172A]">
       {/* Photo background with slow Ken Burns zoom + parallax */}
       <motion.div className="absolute inset-0" style={{ y: imgY }}>
         <motion.img
@@ -119,9 +119,9 @@ export default function HeroSection() {
       </motion.div>
 
       {/* Overlays: tint, left-side legibility, bottom fade */}
-      <div className="absolute inset-0 bg-[#0f2e2f]/45" />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#0b2324]/95 via-[#0f2e2f]/70 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0b2324] to-transparent" />
+      <div className="absolute inset-0 bg-[#0F172A]/45" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/95 via-[#0F172A]/70 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0B1220] to-transparent" />
       {/* Fine scanline texture, like a monitor up close */}
       <div
         className="absolute inset-0 opacity-[0.07] pointer-events-none"
@@ -142,7 +142,7 @@ export default function HeroSection() {
               transition={{ duration: 0.8, delay: 0.2, ease }}
               className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] backdrop-blur px-4 py-1.5 mb-8"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#C9873A]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#0F766E]" />
               <span className="text-white/80 text-xs tracking-wide">
                 Pre-submission claim review for independent practices
               </span>
@@ -152,7 +152,7 @@ export default function HeroSection() {
               {["Stop claim denials", "before they happen."].map((line, i) => (
                 <span key={line} className="block overflow-hidden pb-1">
                   <motion.span
-                    className={`block ${i === 1 ? "text-[#E0A862]" : ""}`}
+                    className={`block ${i === 1 ? "text-[#5EEAD4]" : ""}`}
                     initial={{ y: "105%" }}
                     animate={{ y: 0 }}
                     transition={{ duration: 1, delay: 0.35 + i * 0.12, ease }}
@@ -182,7 +182,7 @@ export default function HeroSection() {
             >
               <a
                 href="#demo"
-                className="px-7 py-3.5 rounded-full bg-[#C9873A] text-white font-semibold text-center hover:bg-[#b5772e] transition-all hover:shadow-xl hover:shadow-[#C9873A]/25"
+                className="px-7 py-3.5 rounded-full bg-[#0F766E] text-white font-semibold text-center hover:bg-[#115E59] transition-all hover:shadow-xl hover:shadow-[#0F766E]/25"
               >
                 Run a note through Prevo
               </a>

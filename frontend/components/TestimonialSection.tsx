@@ -13,7 +13,7 @@ export default function TestimonialSection() {
       ref={ref}
     >
       {/* Full-width band with dark bg */}
-      <div className="absolute inset-0 bg-[#1F4B4C]" />
+      <div className="absolute inset-0 bg-[#1E293B]" />
 
       {/* Decorative lines */}
       <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
@@ -28,7 +28,7 @@ export default function TestimonialSection() {
           transition={{ duration: 0.8 }}
         >
           <svg
-            className="mx-auto mb-8 text-[#C9873A]/40"
+            className="mx-auto mb-8 text-[#0F766E]/40"
             width="48"
             height="48"
             viewBox="0 0 24 24"
@@ -44,8 +44,8 @@ export default function TestimonialSection() {
           </blockquote>
 
           <div className="mt-10 flex flex-col items-center gap-2">
-            <div className="w-12 h-12 rounded-full bg-[#C9873A]/20 flex items-center justify-center">
-              <span className="text-[#C9873A] font-serif font-bold text-lg">
+            <div className="w-12 h-12 rounded-full bg-[#0F766E]/20 flex items-center justify-center">
+              <span className="text-[#0F766E] font-serif font-bold text-lg">
                 P
               </span>
             </div>

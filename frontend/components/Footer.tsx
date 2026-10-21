@@ -2,23 +2,23 @@
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0f2e2f] border-t border-white/5">
+    <footer className="bg-[#0F172A] border-t border-white/5">
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Brand */}
           <div className="md:col-span-1">
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-[#1F4B4C] flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-[#1E293B] flex items-center justify-center">
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                   <path
                     d="M9 2L2 6v6l7 4 7-4V6L9 2z"
-                    stroke="#C9873A"
+                    stroke="#0F766E"
                     strokeWidth="1.5"
                     fill="none"
                   />
                   <path
                     d="M9 8v4M6 10l3 2 3-2"
-                    stroke="#C9873A"
+                    stroke="#0F766E"
                     strokeWidth="1.5"
                     strokeLinecap="round"
                   />
@@ -50,7 +50,7 @@ export default function Footer() {
                 <li key={item}>
                   <a
                     href={href}
-                    className="text-white/40 text-sm hover:text-[#C9873A] transition-colors"
+                    className="text-white/40 text-sm hover:text-[#0F766E] transition-colors"
                   >
                     {item}
                   </a>
@@ -69,7 +69,7 @@ export default function Footer() {
                 <li key={item}>
                   <a
                     href="#"
-                    className="text-white/40 text-sm hover:text-[#C9873A] transition-colors"
+                    className="text-white/40 text-sm hover:text-[#0F766E] transition-colors"
                   >
                     {item}
                   </a>
@@ -87,7 +87,7 @@ export default function Footer() {
                   <li key={item}>
                     <a
                       href="#"
-                      className="text-white/40 text-sm hover:text-[#C9873A] transition-colors"
+                      className="text-white/40 text-sm hover:text-[#0F766E] transition-colors"
                     >
                       {item}
                     </a>
@@ -110,7 +110,7 @@ export default function Footer() {
               <a
                 key={s}
                 href="#"
-                className="text-white/20 text-xs hover:text-[#C9873A] transition-colors"
+                className="text-white/20 text-xs hover:text-[#0F766E] transition-colors"
               >
                 {s}
               </a>

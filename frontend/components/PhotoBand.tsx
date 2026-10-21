@@ -20,7 +20,7 @@ export default function PhotoBand({
   const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1.15, 1.05, 1.15]);
 
   return (
-    <section ref={ref} className="relative h-[70vh] min-h-[460px] overflow-hidden bg-[#0f2e2f]">
+    <section ref={ref} className="relative h-[70vh] min-h-[460px] overflow-hidden bg-[#0F172A]">
       <motion.img
         src={src}
         alt={alt}
@@ -28,15 +28,15 @@ export default function PhotoBand({
         style={{ y, scale }}
         className="absolute inset-0 w-full h-full object-cover"
       />
-      <div className="absolute inset-0 bg-[#0b2324]/60" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0b2324]/80 via-transparent to-[#0b2324]/40" />
+      <div className="absolute inset-0 bg-[#0B1220]/60" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0B1220]/80 via-transparent to-[#0B1220]/40" />
       <div className="relative h-full max-w-7xl mx-auto px-6 flex flex-col justify-end pb-16 sm:pb-20">
         <motion.span
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="text-[#E0A862] text-xs font-semibold uppercase tracking-[0.2em]"
+          className="text-[#5EEAD4] text-xs font-semibold uppercase tracking-[0.2em]"
         >
           {eyebrow}
         </motion.span>
