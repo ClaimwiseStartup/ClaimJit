@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import SectionHeader from "./SectionHeader";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -115,7 +116,7 @@ export default function ProductDemoSection() {
   const ready = !!result?.ready_to_submit;
 
   return (
-    <section id="demo" className="relative py-24 sm:py-32 bg-[#0B1220] overflow-hidden">
+    <section id="demo" className="relative py-28 sm:py-36 bg-[#0F172A] overflow-hidden">
       <div
         className="absolute inset-0 opacity-40"
         style={{
@@ -125,21 +126,19 @@ export default function ProductDemoSection() {
       />
       <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full bg-[#0F766E]/10 blur-[120px]" />
 
-      <div className="relative max-w-6xl mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.8, ease }}
-          className="text-center mb-12"
-        >
-          <span className="text-[#5EEAD4] text-xs font-semibold uppercase tracking-[0.2em]">Live demo</span>
-          <h2 className="font-serif text-4xl sm:text-5xl font-semibold text-white mt-4">Run a note through Prevo.</h2>
-          <p className="text-white/55 mt-4 max-w-xl mx-auto">
-            Paste a de-identified clinical note, pick the payer, and get the corrected claim back with
-            everything a human still needs to sign off on.
-          </p>
-        </motion.div>
+      <div className="relative max-w-[1400px] mx-auto px-6 lg:px-10">
+        <SectionHeader
+          index="07"
+          eyebrow="Live demo"
+          tone="dark"
+          title={
+            <>
+              Run a note <span className="accent text-[#5EEAD4]">through Prevo.</span>
+            </>
+          }
+          lede="Paste a de-identified note, pick the payer, and get the corrected claim back with everything a human still needs to sign off on."
+        />
+        <div className="h-14" />
 
         <motion.div
           initial={{ opacity: 0, y: 40 }}

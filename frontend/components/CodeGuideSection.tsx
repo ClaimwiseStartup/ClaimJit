@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import WindowPane, { StatusPill } from "./WindowPane";
+import SectionHeader from "./SectionHeader";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -122,41 +123,36 @@ export default function CodeGuideSection() {
   const rows = filter === "All" ? ROWS : ROWS.filter((r) => r.kind === filter);
 
   return (
-    <section id="code-guide" className="bg-[#F8FAFC] py-24 sm:py-32">
-      <div className="max-w-7xl mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.8, ease }}
-          className="grid lg:grid-cols-[1fr_auto] gap-8 items-end mb-10"
-        >
-          <div className="max-w-2xl">
-            <span className="text-[#0F766E] text-xs font-semibold uppercase tracking-[0.2em]">Code guide</span>
-            <h2 className="font-serif text-4xl sm:text-5xl font-semibold text-[#1E293B] mt-4 leading-tight">
-              The rules Prevo checks on every claim.
-            </h2>
-            <p className="mt-5 text-[#1E293B]/60 leading-relaxed">
-              A working reference of the specificity and modifier rules behind the most common
-              outpatient denials. Prevo applies these automatically; this is what it's looking for.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {KINDS.map((k) => (
-              <button
-                key={k}
-                onClick={() => setFilter(k)}
-                className={`px-4 py-2 rounded-full text-sm transition-all cursor-pointer border ${
-                  filter === k
-                    ? "bg-[#1E293B] text-white border-[#1E293B]"
-                    : "bg-white text-[#1E293B]/60 border-[#1E293B]/10 hover:border-[#1E293B]/25"
-                }`}
-              >
-                {k}
-              </button>
-            ))}
-          </div>
-        </motion.div>
+    <section id="code-guide" className="bg-[#F8FAFC] py-28 sm:py-36">
+      <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
+        <SectionHeader
+          index="05"
+          eyebrow="Code guide"
+          title={
+            <>
+              The rules Prevo checks on <span className="accent text-[#0F766E]">every claim.</span>
+            </>
+          }
+          lede="A working reference of the specificity and modifier rules behind the most common outpatient denials. Prevo applies them automatically."
+          aside={
+            <div className="mt-6 flex flex-wrap gap-2">
+              {KINDS.map((k) => (
+                <button
+                  key={k}
+                  onClick={() => setFilter(k)}
+                  className={`px-4 py-2 rounded-full text-[13px] transition-all cursor-pointer border ${
+                    filter === k
+                      ? "bg-[#0B1220] text-white border-[#0B1220]"
+                      : "bg-white text-[#475569] border-[#E2E8F0] hover:border-[#94A3B8]"
+                  }`}
+                >
+                  {k}
+                </button>
+              ))}
+            </div>
+          }
+        />
+        <div className="h-14" />
 
         <motion.div
           initial={{ opacity: 0, y: 30 }}

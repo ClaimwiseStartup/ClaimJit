@@ -1,29 +1,31 @@
 import type { Metadata } from "next";
-import { Source_Serif_4, Inter, IBM_Plex_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 
-const serif = Source_Serif_4({
-  variable: "--font-serif",
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-});
-
-const sans = Inter({
+const sans = Geist({
   variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  display: "swap",
 });
 
-const mono = IBM_Plex_Mono({
+const serif = Instrument_Serif({
+  variable: "--font-serif",
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
+const mono = Geist_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Prevo — AI-Powered Claim Denial Prevention",
+  title: "Prevo — Clean claims, before they leave the building",
   description:
-    "Stop claim denials before they happen. Prevo analyzes clinical documentation in real-time, catches coding errors, and optimizes every claim for independent medical practices.",
+    "Prevo reads the signed note like a certified coder, assigns ICD-10-CM, CPT and HCPCS codes, checks NCCI edits and payer policy, and flags what a human needs to fix before submission.",
 };
 
 export default function RootLayout({
@@ -32,10 +34,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body
-        className={`${serif.variable} ${sans.variable} ${mono.variable} font-sans antialiased`}
-      >
+    <html lang="en">
+      <body className={`${sans.variable} ${serif.variable} ${mono.variable} font-sans antialiased`}>
         {children}
       </body>
     </html>

@@ -1,236 +1,170 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import { IMAGES } from "./images";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import LiveVideo from "./LiveVideo";
+import { VIDEOS, IMAGES } from "./images";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-// The live chart-review card cycles through these stages
-const CODE_CHIPS = [
-  { code: "99213", tag: "CPT", mod: "25", note: "E/M, separately identifiable" },
-  { code: "20610", tag: "CPT", mod: "RT", note: "Arthrocentesis, major joint" },
-  { code: "J1030", tag: "HCPCS", mod: "×1", note: "Methylprednisolone 40 mg" },
-  { code: "M25.461", tag: "ICD-10", mod: "", note: "Effusion, right knee" },
-  { code: "I10", tag: "ICD-10", mod: "", note: "Essential hypertension" },
+type Tick = { enc: string; codes: string; status: "clean" | "fixed" | "held"; note: string };
+
+const TICKER: Tick[] = [
+  { enc: "ENC-48213", codes: "99213-25 · 20610-RT · J1030", status: "fixed", note: "Modifier 25 added" },
+  { enc: "ENC-48214", codes: "99396 · Z00.01 · M54.50", status: "clean", note: "Clean" },
+  { enc: "ENC-48215", codes: "99214 · E11.22 · N18.31", status: "fixed", note: "E11.9 → E11.22" },
+  { enc: "ENC-48216", codes: "44970 · K35.30", status: "fixed", note: "49320 removed (bundled)" },
+  { enc: "ENC-48217", codes: "99213 · J06.9", status: "clean", note: "Clean" },
+  { enc: "ENC-48218", codes: "99214 · E11.65", status: "held", note: "Provider query: control status" },
+  { enc: "ENC-48219", codes: "93000 · R00.2", status: "clean", note: "Clean" },
+  { enc: "ENC-48220", codes: "20611 · M17.11", status: "held", note: "Ultrasound image not saved" },
+  { enc: "ENC-48221", codes: "99203 · M25.561", status: "fixed", note: "Laterality added" },
+  { enc: "ENC-48222", codes: "G0438 · Z00.00", status: "clean", note: "Clean" },
 ];
 
-function ChartReviewCard() {
-  const [step, setStep] = useState(0);
+const STATUS = {
+  clean: { dot: "bg-[#5EEAD4]", text: "text-[#5EEAD4]", label: "CLEAN" },
+  fixed: { dot: "bg-[#FBBF24]", text: "text-[#FCD34D]", label: "FIXED" },
+  held: { dot: "bg-[#F87171]", text: "text-[#FCA5A5]", label: "HELD" },
+};
 
-  useEffect(() => {
-    const t = setInterval(() => setStep((s) => (s + 1) % (CODE_CHIPS.length + 3)), 1100);
-    return () => clearInterval(t);
-  }, []);
-
-  const shown = Math.min(step, CODE_CHIPS.length);
-  const done = step > CODE_CHIPS.length;
-
+function Ticker() {
+  const row = [...TICKER, ...TICKER];
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 40, rotate: 1.5 }}
-      animate={{ opacity: 1, y: 0, rotate: 0 }}
-      transition={{ duration: 1.1, delay: 0.7, ease }}
-      className="w-[420px] rounded-xl bg-[#F8FAFC]/95 backdrop-blur-xl shadow-[0_40px_80px_-20px_rgba(0,0,0,0.55)] border border-white/40 overflow-hidden"
-    >
-      {/* EHR header */}
-      <div className="flex items-center justify-between px-5 py-3 bg-[#1E293B] text-white">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#0F766E] animate-pulse" />
-          <span className="font-mono text-[11px] tracking-wider">CHART REVIEW · ENC 48213</span>
+    <div className="absolute inset-x-0 bottom-0 z-20 border-t border-white/10 bg-[#0B1220]/55 backdrop-blur-md">
+      <div className="flex items-center h-14">
+        <div className="shrink-0 flex items-center gap-2.5 pl-6 lg:pl-10 pr-5 h-full border-r border-white/10 bg-[#0B1220]/60">
+          <span className="relative flex w-2 h-2">
+            <span className="absolute inline-flex h-full w-full rounded-full bg-[#5EEAD4] opacity-60 animate-ping" />
+            <span className="relative inline-flex w-2 h-2 rounded-full bg-[#5EEAD4]" />
+          </span>
+          <span className="eyebrow text-white/70 !text-[10px] hidden sm:inline">Live claim queue</span>
+          <span className="eyebrow text-white/70 !text-[10px] sm:hidden">Live</span>
         </div>
-        <span className="font-mono text-[10px] text-white/60">Ortho · Est. pt</span>
-      </div>
-
-      {/* Note excerpt */}
-      <div className="px-5 pt-4 pb-3 border-b border-[#1E293B]/[0.07]">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#1E293B]/40 mb-2">
-          Progress note · Assessment & Plan
-        </p>
-        <p className="text-[12.5px] leading-relaxed text-[#1E293B]/75">
-          45M, <mark className="bg-[#0F766E]/15 text-[#1E293B] rounded px-0.5">right knee pain with moderate effusion</mark>.{" "}
-          <mark className="bg-[#1E293B]/10 text-[#1E293B] rounded px-0.5">Aspirated and injected R knee</mark>, methylprednisolone 40 mg.{" "}
-          <mark className="bg-[#B45309]/10 text-[#1E293B] rounded px-0.5">BP 152/96, start lisinopril</mark>.
-        </p>
-      </div>
-
-      {/* Codes */}
-      <div className="px-5 py-4 space-y-2 min-h-[232px]">
-        <AnimatePresence>
-          {CODE_CHIPS.slice(0, shown).map((c) => (
-            <motion.div
-              key={c.code}
-              initial={{ opacity: 0, x: -12 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.4, ease }}
-              className="flex items-center gap-3 rounded-lg bg-white border border-[#1E293B]/[0.06] px-3 py-2"
-            >
-              <span className="text-[9px] font-mono text-[#1E293B]/40 w-11">{c.tag}</span>
-              <span className="font-mono text-[13px] font-semibold text-[#1E293B]">{c.code}</span>
-              {c.mod && (
-                <span className="font-mono text-[10px] text-[#B45309] bg-[#B45309]/10 rounded px-1.5 py-0.5">
-                  {c.mod.startsWith("×") ? c.mod : `-${c.mod}`}
+        <div className="relative flex-1 overflow-hidden h-full [mask-image:linear-gradient(90deg,transparent,black_6%,black_94%,transparent)]">
+          <div className="marquee flex w-max h-full items-center">
+            {row.map((t, i) => (
+              <div key={i} className="flex items-center gap-3 px-6 font-mono text-[12px] whitespace-nowrap">
+                <span className="text-white/35">{t.enc}</span>
+                <span className="text-white/80">{t.codes}</span>
+                <span className={`flex items-center gap-1.5 ${STATUS[t.status].text}`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${STATUS[t.status].dot}`} />
+                  {STATUS[t.status].label}
                 </span>
-              )}
-              <span className="ml-auto text-[11px] text-[#1E293B]/50 truncate">{c.note}</span>
-            </motion.div>
-          ))}
-        </AnimatePresence>
+                <span className="text-white/40">{t.note}</span>
+                <span className="text-white/15 pl-3">/</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-
-      {/* Status */}
-      <div className="flex items-center justify-between px-5 py-3 bg-white border-t border-[#1E293B]/[0.07]">
-        <span className="text-[11px] text-[#1E293B]/50 font-mono">NCCI · payer rules · LCD</span>
-        <motion.span
-          key={done ? "clean" : "review"}
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className={`text-[11px] font-semibold rounded-full px-3 py-1 ${
-            done ? "bg-[#0F766E]/15 text-[#115E59]" : "bg-[#B45309]/10 text-[#B45309]"
-          }`}
-        >
-          {done ? "✓ Clean claim" : "Reviewing…"}
-        </motion.span>
-      </div>
-    </motion.div>
+    </div>
   );
 }
 
 export default function HeroSection() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const imgY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
-  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const fade = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+  const mediaY = useTransform(scrollYProgress, [0, 1], ["0%", "22%"]);
+  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
+  const fade = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
   return (
-    <section ref={ref} className="relative h-[100svh] min-h-[720px] overflow-hidden bg-[#0F172A]">
-      {/* Photo background with slow Ken Burns zoom + parallax */}
-      <motion.div className="absolute inset-0" style={{ y: imgY }}>
-        <motion.img
-          src={IMAGES.hero}
-          alt="Clinician reviewing patient records across two monitors"
-          className="w-full h-[118%] object-cover object-center"
-          initial={{ scale: 1.18 }}
-          animate={{ scale: 1.04 }}
-          transition={{ duration: 3.2, ease }}
-        />
+    <section id="top" ref={ref} className="relative h-[100svh] min-h-[720px] overflow-hidden bg-[#0B1220] text-white">
+      <motion.div className="absolute inset-0 grain" style={{ y: mediaY }}>
+        <motion.div
+          className="absolute inset-0"
+          initial={{ scale: 1.14, opacity: 0 }}
+          animate={{ scale: 1.02, opacity: 1 }}
+          transition={{ duration: 2.6, ease }}
+        >
+          <LiveVideo
+            src={VIDEOS.hero.src}
+            poster={VIDEOS.hero.poster}
+            fallback={IMAGES.hero}
+            rate={0.85}
+            className="w-full h-full object-cover"
+          />
+        </motion.div>
       </motion.div>
 
-      {/* Overlays: tint, left-side legibility, bottom fade */}
-      <div className="absolute inset-0 bg-[#0F172A]/45" />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/95 via-[#0F172A]/70 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0B1220] to-transparent" />
-      {/* Fine scanline texture, like a monitor up close */}
-      <div
-        className="absolute inset-0 opacity-[0.07] pointer-events-none"
-        style={{
-          backgroundImage: "repeating-linear-gradient(0deg, #fff 0px, #fff 1px, transparent 1px, transparent 3px)",
-        }}
-      />
+      {/* Grade: cool teal cast, heavy base so type always reads */}
+      <div className="absolute inset-0 bg-[#0B1220]/35 mix-blend-multiply" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0B1220] via-[#0B1220]/55 to-[#0B1220]/20" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/70 via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_10%,rgba(15,118,110,0.25),transparent_55%)]" />
 
       <motion.div
-        style={{ y: contentY, opacity: fade }}
-        className="relative z-10 h-full max-w-7xl mx-auto px-6 flex items-center"
+        style={{ y: textY, opacity: fade }}
+        className="relative z-10 h-full max-w-[1400px] mx-auto px-6 lg:px-10 flex flex-col justify-end pb-32 sm:pb-36"
       >
-        <div className="grid lg:grid-cols-[1.1fr_auto] gap-16 items-center w-full pt-20">
-          <div className="max-w-2xl">
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2, ease }}
-              className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] backdrop-blur px-4 py-1.5 mb-8"
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.5, ease }}
+          className="eyebrow text-white/60 mb-7 flex items-center gap-3"
+        >
+          <span className="h-px w-8 bg-white/30" />
+          Pre-submission claim review for independent practices
+        </motion.p>
+
+        <h1 className="display text-[clamp(3.1rem,8.4vw,8.75rem)]">
+          <span className="block overflow-hidden pb-[0.06em]">
+            <motion.span
+              className="block"
+              initial={{ y: "110%" }}
+              animate={{ y: 0 }}
+              transition={{ duration: 1.1, delay: 0.55, ease }}
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#0F766E]" />
-              <span className="text-white/80 text-xs tracking-wide">
-                Pre-submission claim review for independent practices
-              </span>
-            </motion.div>
-
-            <h1 className="font-serif text-white text-[2.75rem] leading-[1.05] sm:text-6xl lg:text-7xl font-semibold tracking-tight">
-              {["Stop claim denials", "before they happen."].map((line, i) => (
-                <span key={line} className="block overflow-hidden pb-1">
-                  <motion.span
-                    className={`block ${i === 1 ? "text-[#5EEAD4]" : ""}`}
-                    initial={{ y: "105%" }}
-                    animate={{ y: 0 }}
-                    transition={{ duration: 1, delay: 0.35 + i * 0.12, ease }}
-                  >
-                    {line}
-                  </motion.span>
-                </span>
-              ))}
-            </h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.75, ease }}
-              className="mt-7 text-lg text-white/70 leading-relaxed max-w-xl"
+              Stop claim denials
+            </motion.span>
+          </span>
+          <span className="block overflow-hidden pb-[0.1em]">
+            <motion.span
+              className="block"
+              initial={{ y: "110%" }}
+              animate={{ y: 0 }}
+              transition={{ duration: 1.1, delay: 0.68, ease }}
             >
-              Prevo reads the signed note the way a certified coder does: it assigns ICD-10-CM, CPT and
-              HCPCS codes, checks modifiers against NCCI edits and payer policy, and flags what a human
-              needs to fix before the claim goes out.
-            </motion.p>
+              <span className="accent text-[#5EEAD4] pr-[0.08em]">before</span> they happen.
+            </motion.span>
+          </span>
+        </h1>
 
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.9, ease }}
-              className="mt-10 flex flex-col sm:flex-row gap-4"
+        <div className="mt-10 grid lg:grid-cols-12 gap-8 items-end">
+          <motion.p
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 1, ease }}
+            className="lg:col-span-5 text-[17px] sm:text-[19px] leading-relaxed text-white/70 text-pretty"
+          >
+            Prevo reads the signed note the way a certified coder does, then checks every code, modifier
+            and unit against NCCI edits and payer policy. Your claims leave clean, or they don't leave.
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 1.12, ease }}
+            className="lg:col-span-7 flex flex-col sm:flex-row lg:justify-end gap-3"
+          >
+            <a
+              href="#demo"
+              className="group inline-flex items-center justify-center gap-3 pl-7 pr-2.5 py-2.5 rounded-full bg-white text-[#0B1220] text-[15px] font-medium hover:bg-white/90 transition-colors"
             >
-              <a
-                href="#demo"
-                className="px-7 py-3.5 rounded-full bg-[#0F766E] text-white font-semibold text-center hover:bg-[#115E59] transition-all hover:shadow-xl hover:shadow-[#0F766E]/25"
-              >
-                Run a note through Prevo
-              </a>
-              <a
-                href="#scenarios"
-                className="px-7 py-3.5 rounded-full border border-white/25 text-white font-medium text-center hover:bg-white/10 transition-all"
-              >
-                See real coding scenarios
-              </a>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1, delay: 1.2 }}
-              className="mt-14"
+              Run a note through Prevo
+              <span className="w-9 h-9 rounded-full bg-[#0F766E] text-white grid place-items-center transition-transform group-hover:translate-x-0.5">→</span>
+            </a>
+            <a
+              href="#product"
+              className="inline-flex items-center justify-center px-7 py-3.5 rounded-full border border-white/25 text-white text-[15px] hover:bg-white/10 transition-colors"
             >
-              <p className="text-[10px] uppercase tracking-[0.2em] text-white/40 mb-3">Checks every claim against</p>
-              <div className="flex flex-wrap gap-x-6 gap-y-2 font-mono text-[13px] text-white/65">
-                <span>ICD-10-CM</span>
-                <span>CPT®</span>
-                <span>HCPCS II</span>
-                <span>NCCI PTP & MUE</span>
-                <span>Payer LCDs</span>
-              </div>
-            </motion.div>
-          </div>
-
-          <div className="hidden lg:block">
-            <ChartReviewCard />
-          </div>
+              See it work on real notes
+            </a>
+          </motion.div>
         </div>
       </motion.div>
 
-      {/* Scroll cue */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.6 }}
-      >
-        <span className="text-[10px] uppercase tracking-[0.2em] text-white/40">Scroll</span>
-        <motion.span
-          className="block w-px h-10 bg-gradient-to-b from-white/50 to-transparent"
-          animate={{ scaleY: [0.4, 1, 0.4], originY: 0 }}
-          transition={{ duration: 2, repeat: Infinity }}
-        />
-      </motion.div>
+      <Ticker />
     </section>
   );
 }

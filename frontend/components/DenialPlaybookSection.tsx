@@ -1,7 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { IMAGES } from "./images";
+import { IMAGES, VIDEOS } from "./images";
+import LiveVideo from "./LiveVideo";
+import SectionHeader from "./SectionHeader";
 import WindowPane from "./WindowPane";
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -37,36 +39,32 @@ const TIPS = [
   },
   {
     title: "Fix it before submission, not after",
-    body: "Reworking a denied claim costs staff time on every claim, and a large share are never resubmitted. Medicare's filing window is 12 months from the date of service.",
+    body: "Working a denial averages $25.20 in staff time, and one in four denials is never recovered. Medicare's filing window is 12 months from the date of service.",
   },
 ];
 
 export default function DenialPlaybookSection() {
   return (
-    <section id="playbook" className="relative bg-[#0F172A] py-24 sm:py-32 overflow-hidden">
-      {/* Faint photo texture */}
-      <img
-        src={IMAGES.workspace}
-        alt=""
-        aria-hidden
-        loading="lazy"
-        className="absolute inset-0 w-full h-full object-cover opacity-[0.08] mix-blend-luminosity"
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0F172A] via-[#0F172A]/90 to-[#0F172A]" />
+    <section id="playbook" className="relative bg-[#0B1220] py-28 sm:py-36 overflow-hidden">
+      {/* Live ECG monitor behind the section */}
+      <div className="absolute inset-0 grain">
+        <LiveVideo src={VIDEOS.ecg.src} poster={VIDEOS.ecg.poster} fallback={IMAGES.workspace} rate={0.8} className="w-full h-full object-cover opacity-[0.22]" />
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0B1220] via-[#0B1220]/80 to-[#0B1220]" />
 
-      <div className="relative max-w-7xl mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.8, ease }}
-          className="max-w-2xl mb-14"
-        >
-          <span className="text-[#5EEAD4] text-xs font-semibold uppercase tracking-[0.2em]">Denial prevention playbook</span>
-          <h2 className="font-serif text-4xl sm:text-5xl font-semibold text-white mt-4 leading-tight">
-            The denial codes we stop before the payer sends them.
-          </h2>
-        </motion.div>
+      <div className="relative max-w-[1400px] mx-auto px-6 lg:px-10">
+        <SectionHeader
+          index="08"
+          eyebrow="Denial prevention playbook"
+          tone="dark"
+          title={
+            <>
+              The denial codes we stop <span className="accent text-[#5EEAD4]">before</span> the payer sends them.
+            </>
+          }
+          lede="Every remittance tells you why a claim failed. Prevo runs those same checks on the way out, so the answer never has to come back on an 835."
+        />
+        <div className="h-14" />
 
         <div className="grid lg:grid-cols-[1.4fr_1fr] gap-6">
           {/* CARC list */}
@@ -112,7 +110,7 @@ export default function DenialPlaybookSection() {
             transition={{ duration: 0.9, delay: 0.1, ease }}
           >
             <WindowPane title="Code Set Calendar" icon="calendar" className="h-full" bodyClassName="p-7 bg-[#F8FAFC]">
-            <h3 className="font-serif text-2xl font-semibold text-[#1E293B]">Code sets change. Prevo keeps up.</h3>
+            <h3 className="text-[28px] font-medium tracking-[-0.035em] leading-tight text-[#0B1220]">Code sets change. <span className="accent text-[#0F766E]">Prevo keeps up.</span></h3>
             <p className="text-[13px] text-[#1E293B]/55 mt-2 leading-relaxed">
               A code that was valid last quarter can reject today. Every claim is validated against the
               code set in effect on its date of service.

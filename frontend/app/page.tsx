@@ -1,39 +1,44 @@
 import Navigation from "../components/Navigation";
 import HeroSection from "../components/HeroSection";
-import WhoItsForSection from "../components/WhoItsForSection";
+import StatementSection from "../components/StatementSection";
 import StatsSection from "../components/StatsSection";
+import WhoItsForSection from "../components/WhoItsForSection";
+import ProductShowcase from "../components/ProductShowcase";
 import HowItWorksSection from "../components/HowItWorksSection";
 import PhotoBand from "../components/PhotoBand";
-import ScenariosSection from "../components/ScenariosSection";
 import CodeGuideSection from "../components/CodeGuideSection";
 import FeaturesSection from "../components/FeaturesSection";
 import ProductDemoSection from "../components/ProductDemoSection";
 import DenialPlaybookSection from "../components/DenialPlaybookSection";
-import TestimonialSection from "../components/TestimonialSection";
 import CTASection from "../components/CTASection";
 import Footer from "../components/Footer";
-import { IMAGES } from "../components/images";
+import { VIDEOS, IMAGES } from "../components/images";
 
 export default function Home() {
   return (
-    <main className="overflow-x-hidden">
+    <main className="overflow-x-clip">
       <Navigation />
       <HeroSection />
-      <WhoItsForSection />
+      <StatementSection />
       <StatsSection />
+      <WhoItsForSection />
+      <ProductShowcase />
       <HowItWorksSection />
       <PhotoBand
-        src={IMAGES.audit}
-        alt="Coder reviewing a paper chart next to a computer"
+        video={VIDEOS.hallway.src}
+        poster={VIDEOS.hallway.poster}
+        fallback={IMAGES.audit}
         eyebrow="Chart to claim"
-        line="From the signed note to a clean claim, before it ever reaches the payer."
+        line={
+          <>
+            Your team cares for patients. <span className="accent text-[#5EEAD4]">Prevo</span> cares for the claim.
+          </>
+        }
       />
-      <ScenariosSection />
       <CodeGuideSection />
       <FeaturesSection />
       <ProductDemoSection />
       <DenialPlaybookSection />
-      <TestimonialSection />
       <CTASection />
       <Footer />
     </main>

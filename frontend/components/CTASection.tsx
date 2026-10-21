@@ -1,56 +1,80 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { IMAGES } from "./images";
+import LiveVideo from "./LiveVideo";
+import { VIDEOS, IMAGES } from "./images";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 export default function CTASection() {
   return (
-    <section id="contact" className="relative overflow-hidden bg-[#0F172A]">
-      <motion.img
-        src={IMAGES.closing}
-        alt="Billing staff member reviewing a claim at a workstation"
-        loading="lazy"
-        initial={{ scale: 1.12 }}
+    <section id="contact" className="relative overflow-hidden bg-[#0B1220] text-white">
+      <motion.div
+        initial={{ scale: 1.15 }}
         whileInView={{ scale: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 2.4, ease }}
-        className="absolute inset-0 w-full h-full object-cover"
-      />
-      <div className="absolute inset-0 bg-[#0B1220]/70" />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/90 via-[#0B1220]/50 to-transparent" />
+        transition={{ duration: 2.6, ease }}
+        className="absolute inset-0 grain"
+      >
+        <LiveVideo src={VIDEOS.waiting.src} poster={VIDEOS.waiting.poster} fallback={IMAGES.closing} rate={0.7} className="w-full h-full object-cover" />
+      </motion.div>
+      <div className="absolute inset-0 bg-[#0B1220]/60" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/95 via-[#0B1220]/60 to-[#0B1220]/20" />
 
-      <div className="relative max-w-7xl mx-auto px-6 py-32 sm:py-40">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
+      <div className="relative max-w-[1400px] mx-auto px-6 lg:px-10 py-36 sm:py-48">
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease }}
+          className="eyebrow text-[#5EEAD4] flex items-center gap-3"
+        >
+          <span className="text-white/40">09</span>
+          <span className="h-px w-8 bg-white/25" />
+          Get started
+        </motion.p>
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.9, ease }}
-          className="max-w-2xl"
+          transition={{ duration: 1.1, ease }}
+          className="display mt-6 text-[clamp(3.2rem,9vw,9rem)]"
         >
-          <h2 className="font-serif text-4xl sm:text-6xl font-semibold text-white leading-[1.05]">
-            Get to know Prevo.
-          </h2>
-          <p className="text-white/70 mt-6 text-lg leading-relaxed max-w-xl">
-            Send us a week of de-identified notes and we'll show you which claims would have been denied,
-            and what they should have looked like.
-          </p>
-          <div className="mt-10 flex flex-col sm:flex-row gap-4">
+          Get to know <span className="accent text-[#5EEAD4]">Prevo.</span>
+        </motion.h2>
+        <div className="mt-12 grid lg:grid-cols-12 gap-10 items-end">
+          <motion.p
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.9, delay: 0.15, ease }}
+            className="lg:col-span-5 text-[18px] leading-relaxed text-white/70"
+          >
+            Send us a week of de-identified notes. We'll show you which claims would have been denied,
+            why, and what they should have looked like.
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.9, delay: 0.25, ease }}
+            className="lg:col-span-7 flex flex-col sm:flex-row lg:justify-end gap-3"
+          >
             <a
               href="mailto:team@prevo.ai?subject=Prevo%20claim%20review"
-              className="px-8 py-4 rounded-full bg-[#0F766E] text-white font-semibold text-center hover:bg-[#115E59] transition-all hover:shadow-xl hover:shadow-[#0F766E]/25"
+              className="group inline-flex items-center justify-center gap-3 pl-7 pr-2.5 py-2.5 rounded-full bg-white text-[#0B1220] text-[15px] font-medium hover:bg-white/90 transition-colors"
             >
               Book a call
+              <span className="w-9 h-9 rounded-full bg-[#0F766E] text-white grid place-items-center transition-transform group-hover:translate-x-0.5">→</span>
             </a>
             <a
               href="#demo"
-              className="px-8 py-4 rounded-full border border-white/25 text-white font-medium text-center hover:bg-white/10 transition-all"
+              className="inline-flex items-center justify-center px-7 py-3.5 rounded-full border border-white/25 text-white text-[15px] hover:bg-white/10 transition-colors"
             >
               Try the live demo
             </a>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );
