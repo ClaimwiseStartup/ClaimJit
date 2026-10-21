@@ -1,196 +1,235 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { IMAGES } from "./images";
 
-/* Animated mesh gradient background — gives the "video background" feel
-   without needing actual footage. Uses layered radial gradients that drift. */
-function AnimatedMeshBG() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+const ease = [0.22, 1, 0.36, 1] as const;
+
+// The live chart-review card cycles through these stages
+const CODE_CHIPS = [
+  { code: "99213", tag: "CPT", mod: "25", note: "E/M, separately identifiable" },
+  { code: "20610", tag: "CPT", mod: "RT", note: "Arthrocentesis, major joint" },
+  { code: "J1030", tag: "HCPCS", mod: "×1", note: "Methylprednisolone 40 mg" },
+  { code: "M25.461", tag: "ICD-10", mod: "", note: "Effusion, right knee" },
+  { code: "I10", tag: "ICD-10", mod: "", note: "Essential hypertension" },
+];
+
+function ChartReviewCard() {
+  const [step, setStep] = useState(0);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animId: number;
-    let w = 0,
-      h = 0;
-
-    const resize = () => {
-      w = canvas.width = canvas.offsetWidth * 2;
-      h = canvas.height = canvas.offsetHeight * 2;
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
-    const orbs = [
-      { x: 0.2, y: 0.3, r: 0.45, color: [31, 75, 76], speed: 0.0003 },
-      { x: 0.7, y: 0.6, r: 0.5, color: [201, 135, 58], speed: 0.0004 },
-      { x: 0.5, y: 0.2, r: 0.4, color: [20, 60, 62], speed: 0.00035 },
-      { x: 0.8, y: 0.3, r: 0.35, color: [92, 133, 88], speed: 0.00025 },
-    ];
-
-    const draw = (t: number) => {
-      ctx.fillStyle = "#0f2e2f";
-      ctx.fillRect(0, 0, w, h);
-
-      for (const orb of orbs) {
-        const ox = (orb.x + Math.sin(t * orb.speed) * 0.15) * w;
-        const oy = (orb.y + Math.cos(t * orb.speed * 1.3) * 0.1) * h;
-        const grad = ctx.createRadialGradient(ox, oy, 0, ox, oy, orb.r * w);
-        grad.addColorStop(0, `rgba(${orb.color.join(",")}, 0.4)`);
-        grad.addColorStop(1, `rgba(${orb.color.join(",")}, 0)`);
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, w, h);
-      }
-
-      animId = requestAnimationFrame(draw);
-    };
-    animId = requestAnimationFrame(draw);
-
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener("resize", resize);
-    };
+    const t = setInterval(() => setStep((s) => (s + 1) % (CODE_CHIPS.length + 3)), 1100);
+    return () => clearInterval(t);
   }, []);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 w-full h-full"
-      style={{ opacity: 0.85 }}
-    />
-  );
-}
+  const shown = Math.min(step, CODE_CHIPS.length);
+  const done = step > CODE_CHIPS.length;
 
-/* Floating particles for depth */
-function FloatingParticles() {
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {Array.from({ length: 30 }).map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-1 h-1 rounded-full bg-white/20"
-          initial={{
-            x: `${Math.random() * 100}vw`,
-            y: `${Math.random() * 100}%`,
-          }}
-          animate={{
-            y: [null, `${-20 + Math.random() * 120}%`],
-            opacity: [0, 0.6, 0],
-          }}
-          transition={{
-            duration: 8 + Math.random() * 12,
-            repeat: Infinity,
-            delay: Math.random() * 5,
-            ease: "linear",
-          }}
-        />
-      ))}
-    </div>
+    <motion.div
+      initial={{ opacity: 0, y: 40, rotate: 1.5 }}
+      animate={{ opacity: 1, y: 0, rotate: 0 }}
+      transition={{ duration: 1.1, delay: 0.7, ease }}
+      className="w-[420px] rounded-2xl bg-[#FAF8F4]/95 backdrop-blur-xl shadow-[0_40px_80px_-20px_rgba(0,0,0,0.55)] border border-white/40 overflow-hidden"
+    >
+      {/* EHR header */}
+      <div className="flex items-center justify-between px-5 py-3 bg-[#1F4B4C] text-white">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-[#C9873A] animate-pulse" />
+          <span className="font-mono text-[11px] tracking-wider">CHART REVIEW · ENC 48213</span>
+        </div>
+        <span className="font-mono text-[10px] text-white/60">Ortho · Est. pt</span>
+      </div>
+
+      {/* Note excerpt */}
+      <div className="px-5 pt-4 pb-3 border-b border-[#1C2321]/[0.07]">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#1C2321]/40 mb-2">
+          Progress note · Assessment & Plan
+        </p>
+        <p className="text-[12.5px] leading-relaxed text-[#1C2321]/75">
+          45M, <mark className="bg-[#C9873A]/15 text-[#1C2321] rounded px-0.5">right knee pain with moderate effusion</mark>.{" "}
+          <mark className="bg-[#1F4B4C]/10 text-[#1C2321] rounded px-0.5">Aspirated and injected R knee</mark>, methylprednisolone 40 mg.{" "}
+          <mark className="bg-[#5C8558]/15 text-[#1C2321] rounded px-0.5">BP 152/96, start lisinopril</mark>.
+        </p>
+      </div>
+
+      {/* Codes */}
+      <div className="px-5 py-4 space-y-2 min-h-[232px]">
+        <AnimatePresence>
+          {CODE_CHIPS.slice(0, shown).map((c) => (
+            <motion.div
+              key={c.code}
+              initial={{ opacity: 0, x: -12 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4, ease }}
+              className="flex items-center gap-3 rounded-lg bg-white border border-[#1C2321]/[0.06] px-3 py-2"
+            >
+              <span className="text-[9px] font-mono text-[#1C2321]/40 w-11">{c.tag}</span>
+              <span className="font-mono text-[13px] font-semibold text-[#1F4B4C]">{c.code}</span>
+              {c.mod && (
+                <span className="font-mono text-[10px] text-[#C9873A] bg-[#C9873A]/10 rounded px-1.5 py-0.5">
+                  {c.mod.startsWith("×") ? c.mod : `-${c.mod}`}
+                </span>
+              )}
+              <span className="ml-auto text-[11px] text-[#1C2321]/50 truncate">{c.note}</span>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+
+      {/* Status */}
+      <div className="flex items-center justify-between px-5 py-3 bg-white border-t border-[#1C2321]/[0.07]">
+        <span className="text-[11px] text-[#1C2321]/50 font-mono">NCCI · payer rules · LCD</span>
+        <motion.span
+          key={done ? "clean" : "review"}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className={`text-[11px] font-semibold rounded-full px-3 py-1 ${
+            done ? "bg-[#5C8558]/15 text-[#3d6b3a]" : "bg-[#C9873A]/12 text-[#8A5A24]"
+          }`}
+        >
+          {done ? "✓ Clean claim" : "Reviewing…"}
+        </motion.span>
+      </div>
+    </motion.div>
   );
 }
 
 export default function HeroSection() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const imgY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
+  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const fade = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Animated background */}
-      <AnimatedMeshBG />
-      <FloatingParticles />
+    <section ref={ref} className="relative h-[100svh] min-h-[720px] overflow-hidden bg-[#0f2e2f]">
+      {/* Photo background with slow Ken Burns zoom + parallax */}
+      <motion.div className="absolute inset-0" style={{ y: imgY }}>
+        <motion.img
+          src={IMAGES.hero}
+          alt="Clinician reviewing patient records across two monitors"
+          className="w-full h-[118%] object-cover object-center"
+          initial={{ scale: 1.18 }}
+          animate={{ scale: 1.04 }}
+          transition={{ duration: 3.2, ease }}
+        />
+      </motion.div>
 
-      {/* Gradient overlay for text readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-[#0f2e2f]/80" />
+      {/* Overlays: tint, left-side legibility, bottom fade */}
+      <div className="absolute inset-0 bg-[#0f2e2f]/45" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#0b2324]/95 via-[#0f2e2f]/70 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0b2324] to-transparent" />
+      {/* Fine scanline texture, like a monitor up close */}
+      <div
+        className="absolute inset-0 opacity-[0.07] pointer-events-none"
+        style={{
+          backgroundImage: "repeating-linear-gradient(0deg, #fff 0px, #fff 1px, transparent 1px, transparent 3px)",
+        }}
+      />
 
-      {/* Content */}
-      <div className="relative z-10 max-w-5xl mx-auto px-6 text-center pt-24 pb-16">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-        >
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white/80 text-sm font-medium mb-8">
-            <span className="w-2 h-2 rounded-full bg-[#5C8558] animate-pulse" />
-            AI-Powered Denial Prevention
-          </span>
-        </motion.div>
-
-        <motion.h1
-          className="font-serif text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-6"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-        >
-          Stop Claim Denials
-          <br />
-          <span className="text-[#C9873A]">Before They Happen</span>
-        </motion.h1>
-
-        <motion.p
-          className="text-lg sm:text-xl text-white/70 max-w-2xl mx-auto mb-10 leading-relaxed"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.7 }}
-        >
-          Prevo analyzes your clinical documentation in real-time, catches coding
-          errors, and ensures every claim is optimized — so small clinics stop
-          losing revenue to preventable denials.
-        </motion.p>
-
-        <motion.div
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.9 }}
-        >
-          <a
-            href="#demo"
-            className="px-8 py-4 rounded-full bg-[#C9873A] text-white font-semibold text-base hover:bg-[#b5772e] transition-all shadow-xl shadow-[#C9873A]/20 hover:shadow-2xl hover:shadow-[#C9873A]/30 hover:scale-[1.02]"
-          >
-            Try the Analyzer
-          </a>
-          <a
-            href="#how-it-works"
-            className="px-8 py-4 rounded-full border border-white/20 text-white font-medium text-base hover:bg-white/10 transition-all backdrop-blur-sm"
-          >
-            See How It Works
-          </a>
-        </motion.div>
-
-        {/* Trust badges */}
-        <motion.div
-          className="mt-16 flex flex-col items-center gap-3"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 1 }}
-        >
-          <p className="text-white/40 text-xs uppercase tracking-widest">
-            Built for independent clinics
-          </p>
-          <div className="flex items-center gap-6 text-white/30">
-            <span className="text-sm font-medium">HIPAA Compliant</span>
-            <span className="w-1 h-1 rounded-full bg-white/20" />
-            <span className="text-sm font-medium">SOC 2</span>
-            <span className="w-1 h-1 rounded-full bg-white/20" />
-            <span className="text-sm font-medium">256-bit Encryption</span>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Scroll indicator */}
       <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-        animate={{ y: [0, 8, 0] }}
-        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        style={{ y: contentY, opacity: fade }}
+        className="relative z-10 h-full max-w-7xl mx-auto px-6 flex items-center"
       >
-        <div className="w-6 h-10 rounded-full border-2 border-white/20 flex items-start justify-center p-1.5">
-          <motion.div
-            className="w-1.5 h-1.5 rounded-full bg-white/50"
-            animate={{ y: [0, 12, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          />
+        <div className="grid lg:grid-cols-[1.1fr_auto] gap-16 items-center w-full pt-20">
+          <div className="max-w-2xl">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease }}
+              className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] backdrop-blur px-4 py-1.5 mb-8"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C9873A]" />
+              <span className="text-white/80 text-xs tracking-wide">
+                Pre-submission claim review for independent practices
+              </span>
+            </motion.div>
+
+            <h1 className="font-serif text-white text-[2.75rem] leading-[1.05] sm:text-6xl lg:text-7xl font-semibold tracking-tight">
+              {["Stop claim denials", "before they happen."].map((line, i) => (
+                <span key={line} className="block overflow-hidden pb-1">
+                  <motion.span
+                    className={`block ${i === 1 ? "text-[#E0A862]" : ""}`}
+                    initial={{ y: "105%" }}
+                    animate={{ y: 0 }}
+                    transition={{ duration: 1, delay: 0.35 + i * 0.12, ease }}
+                  >
+                    {line}
+                  </motion.span>
+                </span>
+              ))}
+            </h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.75, ease }}
+              className="mt-7 text-lg text-white/70 leading-relaxed max-w-xl"
+            >
+              Prevo reads the signed note the way a certified coder does: it assigns ICD-10-CM, CPT and
+              HCPCS codes, checks modifiers against NCCI edits and payer policy, and flags what a human
+              needs to fix before the claim goes out.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.9, ease }}
+              className="mt-10 flex flex-col sm:flex-row gap-4"
+            >
+              <a
+                href="#demo"
+                className="px-7 py-3.5 rounded-full bg-[#C9873A] text-white font-semibold text-center hover:bg-[#b5772e] transition-all hover:shadow-xl hover:shadow-[#C9873A]/25"
+              >
+                Run a note through Prevo
+              </a>
+              <a
+                href="#scenarios"
+                className="px-7 py-3.5 rounded-full border border-white/25 text-white font-medium text-center hover:bg-white/10 transition-all"
+              >
+                See real coding scenarios
+              </a>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 1.2 }}
+              className="mt-14"
+            >
+              <p className="text-[10px] uppercase tracking-[0.2em] text-white/40 mb-3">Checks every claim against</p>
+              <div className="flex flex-wrap gap-x-6 gap-y-2 font-mono text-[13px] text-white/65">
+                <span>ICD-10-CM</span>
+                <span>CPT®</span>
+                <span>HCPCS II</span>
+                <span>NCCI PTP & MUE</span>
+                <span>Payer LCDs</span>
+              </div>
+            </motion.div>
+          </div>
+
+          <div className="hidden lg:block">
+            <ChartReviewCard />
+          </div>
         </div>
+      </motion.div>
+
+      {/* Scroll cue */}
+      <motion.div
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.6 }}
+      >
+        <span className="text-[10px] uppercase tracking-[0.2em] text-white/40">Scroll</span>
+        <motion.span
+          className="block w-px h-10 bg-gradient-to-b from-white/50 to-transparent"
+          animate={{ scaleY: [0.4, 1, 0.4], originY: 0 }}
+          transition={{ duration: 2, repeat: Infinity }}
+        />
       </motion.div>
     </section>
   );

@@ -40,18 +40,22 @@ export default function Footer() {
               Product
             </h4>
             <ul className="space-y-2.5">
-              {["Features", "How It Works", "Live Demo", "Pricing"].map(
-                (item) => (
-                  <li key={item}>
-                    <a
-                      href={`#${item.toLowerCase().replace(/\s/g, "-")}`}
-                      className="text-white/40 text-sm hover:text-[#C9873A] transition-colors"
-                    >
-                      {item}
-                    </a>
-                  </li>
-                )
-              )}
+              {[
+                ["How It Works", "#how-it-works"],
+                ["Scenarios", "#scenarios"],
+                ["Code Guide", "#code-guide"],
+                ["Denial Playbook", "#playbook"],
+                ["Live Demo", "#demo"],
+              ].map(([item, href]) => (
+                <li key={item}>
+                  <a
+                    href={href}
+                    className="text-white/40 text-sm hover:text-[#C9873A] transition-colors"
+                  >
+                    {item}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
