@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SectionHeader from "./SectionHeader";
+import Mark from "./Mark";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -128,12 +129,12 @@ export default function ProductDemoSection() {
 
       <div className="relative max-w-[1400px] mx-auto px-6 lg:px-10">
         <SectionHeader
-          index="07"
-          eyebrow="Live demo"
+          index="1"
+          eyebrow="Insurance type · Live demo"
           tone="dark"
           title={
             <>
-              Run a note <span className="accent text-[#5EEAD4]">through Prevo.</span>
+              Run a note <Mark tone="dark">through Prevo.</Mark>
             </>
           }
           lede="Paste a de-identified note, pick the payer, and get the corrected claim back with everything a human still needs to sign off on."

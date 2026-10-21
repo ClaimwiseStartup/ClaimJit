@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import LiveVideo from "./LiveVideo";
 import { VIDEOS, IMAGES } from "./images";
+import FieldLabel from "./FieldLabel";
+import Mark from "./Mark";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -22,25 +24,17 @@ export default function CTASection() {
       <div className="absolute inset-0 bg-gradient-to-r from-[#0B1220]/95 via-[#0B1220]/60 to-[#0B1220]/20" />
 
       <div className="relative max-w-[1400px] mx-auto px-6 lg:px-10 py-36 sm:py-48">
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, ease }}
-          className="eyebrow text-[#5EEAD4] flex items-center gap-3"
-        >
-          <span className="text-white/40">09</span>
-          <span className="h-px w-8 bg-white/25" />
-          Get started
-        </motion.p>
+        <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, ease }}>
+          <FieldLabel box="31" label="Signature of physician or supplier" tone="dark" />
+        </motion.div>
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 1.1, ease }}
-          className="display mt-6 text-[clamp(3.2rem,9vw,9rem)]"
+          className="display mt-8 text-[clamp(3rem,8vw,8rem)]"
         >
-          Get to know <span className="accent text-[#5EEAD4]">Prevo.</span>
+          Send us a week <br className="hidden sm:block" />of <Mark tone="dark">notes.</Mark>
         </motion.h2>
         <div className="mt-12 grid lg:grid-cols-12 gap-10 items-end">
           <motion.p
@@ -50,8 +44,8 @@ export default function CTASection() {
             transition={{ duration: 0.9, delay: 0.15, ease }}
             className="lg:col-span-5 text-[18px] leading-relaxed text-white/70"
           >
-            Send us a week of de-identified notes. We'll show you which claims would have been denied,
-            why, and what they should have looked like.
+            A free claim audit. Send a week of de-identified notes and we'll return every claim that would
+            have been denied, why, and the corrected version. No setup, no contract.
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 14 }}
@@ -64,7 +58,7 @@ export default function CTASection() {
               href="mailto:team@prevo.ai?subject=Prevo%20claim%20review"
               className="group inline-flex items-center justify-center gap-3 pl-7 pr-2.5 py-2.5 rounded-full bg-white text-[#0B1220] text-[15px] font-medium hover:bg-white/90 transition-colors"
             >
-              Book a call
+              Get a free claim audit
               <span className="w-9 h-9 rounded-full bg-[#0F766E] text-white grid place-items-center transition-transform group-hover:translate-x-0.5">→</span>
             </a>
             <a

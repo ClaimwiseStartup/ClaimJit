@@ -3,6 +3,7 @@
 import { useState, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SectionHeader from "./SectionHeader";
+import Mark from "./Mark";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -170,11 +171,11 @@ export default function HowItWorksSection() {
     <section id="how-it-works" className="bg-[#F8FAFC] py-28 sm:py-36">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
         <SectionHeader
-          index="04"
-          eyebrow="How it works"
+          index="24E"
+          eyebrow="Diagnosis pointer · How it works"
           title={
             <>
-              From signed note to clean claim in <span className="accent text-[#0F766E]">four moves.</span>
+              From signed note to clean claim in <Mark>four moves.</Mark>
             </>
           }
         />

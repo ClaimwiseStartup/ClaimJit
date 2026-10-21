@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import WindowPane, { StatusPill } from "./WindowPane";
 import SectionHeader from "./SectionHeader";
+import Mark from "./Mark";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -126,11 +127,11 @@ export default function CodeGuideSection() {
     <section id="code-guide" className="bg-[#F8FAFC] py-28 sm:py-36">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
         <SectionHeader
-          index="05"
-          eyebrow="Code guide"
+          index="21"
+          eyebrow="Diagnosis · Code guide"
           title={
             <>
-              The rules Prevo checks on <span className="accent text-[#0F766E]">every claim.</span>
+              The coding rules behind <Mark>clean claims.</Mark>
             </>
           }
           lede="A working reference of the specificity and modifier rules behind the most common outpatient denials. Prevo applies them automatically."

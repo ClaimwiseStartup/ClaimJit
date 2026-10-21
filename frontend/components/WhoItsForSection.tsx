@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import LiveVideo from "./LiveVideo";
 import SectionHeader from "./SectionHeader";
 import { VIDEOS, IMAGES } from "./images";
+import Mark from "./Mark";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -33,11 +34,11 @@ export default function WhoItsForSection() {
     <section id="who-its-for" className="bg-white py-28 sm:py-36">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
         <SectionHeader
-          index="02"
-          eyebrow="Who it's for"
+          index="33"
+          eyebrow="Billing provider"
           title={
             <>
-              Built for the people who get the claim <span className="accent text-[#0F766E]">out the door.</span>
+              Built for the people who get the claim <Mark>out the door.</Mark>
             </>
           }
         />

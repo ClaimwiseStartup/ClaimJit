@@ -4,10 +4,11 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
-  { label: "Product", href: "#product" },
-  { label: "How it works", href: "#how-it-works" },
+  { label: "Worklist", href: "#product" },
+  { label: "Claim form", href: "#claim-form" },
+  { label: "Calculator", href: "#calculator" },
   { label: "Code guide", href: "#code-guide" },
-  { label: "Live demo", href: "#demo" },
+  { label: "Demo", href: "#demo" },
 ];
 
 export function Logo({ light = false }: { light?: boolean }) {
@@ -71,7 +72,7 @@ export default function Navigation() {
               light ? "bg-white text-[#0B1220] hover:bg-white/90" : "bg-[#0B1220] text-white hover:bg-[#1E293B]"
             }`}
           >
-            Book a call
+            Free claim audit
             <span className={`w-7 h-7 rounded-full grid place-items-center transition-transform group-hover:translate-x-0.5 ${light ? "bg-[#0F766E] text-white" : "bg-white/15 text-white"}`}>
               →
             </span>
@@ -110,7 +111,7 @@ export default function Navigation() {
                 onClick={() => setOpen(false)}
                 className="mt-4 px-5 py-3.5 rounded-full bg-[#0B1220] text-white text-[15px] font-medium text-center"
               >
-                Book a call
+                Get a free claim audit
               </a>
             </div>
           </motion.div>

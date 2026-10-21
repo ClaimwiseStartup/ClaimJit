@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import SectionHeader from "./SectionHeader";
+import Mark from "./Mark";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -19,11 +20,11 @@ export default function FeaturesSection() {
     <section id="features" className="bg-white py-28 sm:py-36">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
         <SectionHeader
-          index="06"
-          eyebrow="Inside Prevo"
+          index="24D"
+          eyebrow="Procedures & modifiers"
           title={
             <>
-              Everything a coder checks. <span className="accent text-[#0F766E]">On every claim.</span>
+              What Prevo checks, <Mark>on every claim.</Mark>
             </>
           }
           lede="Small practices don't have a coding department. Prevo gives them the checks one would run, without adding a step to anyone's day."

@@ -2,10 +2,11 @@
 
 import type { ReactNode } from "react";
 import { motion } from "framer-motion";
+import FieldLabel from "./FieldLabel";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-// Consistent editorial section opener: index + eyebrow, big display title, optional lede.
+// Section opener: CMS-1500 field label, big display title, optional lede/aside.
 export default function SectionHeader({
   index,
   eyebrow,
@@ -15,7 +16,7 @@ export default function SectionHeader({
   aside,
   className = "",
 }: {
-  index: string;
+  index: string; // CMS-1500 box number
   eyebrow: string;
   title: ReactNode;
   lede?: ReactNode;
@@ -32,20 +33,15 @@ export default function SectionHeader({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.6, ease }}
-          className={`eyebrow flex items-center gap-3 ${dark ? "text-[#5EEAD4]" : "text-[#0F766E]"}`}
         >
-          <span className={dark ? "text-white/40" : "text-[#94A3B8]"}>{index}</span>
-          <span className={`h-px w-8 ${dark ? "bg-white/25" : "bg-[#CBD5E1]"}`} />
-          {eyebrow}
+          <FieldLabel box={index} label={eyebrow} tone={tone} />
         </motion.div>
         <motion.h2
           initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.9, delay: 0.05, ease }}
-          className={`display mt-6 text-[clamp(2.6rem,5.6vw,5.25rem)] text-balance ${
-            dark ? "text-white" : "text-[#0B1220]"
-          }`}
+          className={`display mt-7 text-[clamp(2.6rem,5.6vw,5.25rem)] text-balance ${dark ? "text-white" : "text-[#0B1220]"}`}
         >
           {title}
         </motion.h2>
@@ -58,9 +54,7 @@ export default function SectionHeader({
           transition={{ duration: 0.8, delay: 0.15, ease }}
           className="lg:col-span-4 lg:pb-3"
         >
-          {lede && (
-            <p className={`text-[17px] leading-relaxed text-pretty ${dark ? "text-white/60" : "text-[#475569]"}`}>{lede}</p>
-          )}
+          {lede && <p className={`text-[17px] leading-relaxed text-pretty ${dark ? "text-white/60" : "text-[#475569]"}`}>{lede}</p>}
           {aside}
         </motion.div>
       )}

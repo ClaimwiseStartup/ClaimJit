@@ -5,6 +5,7 @@ import { IMAGES, VIDEOS } from "./images";
 import LiveVideo from "./LiveVideo";
 import SectionHeader from "./SectionHeader";
 import WindowPane from "./WindowPane";
+import Mark from "./Mark";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -54,12 +55,12 @@ export default function DenialPlaybookSection() {
 
       <div className="relative max-w-[1400px] mx-auto px-6 lg:px-10">
         <SectionHeader
-          index="08"
-          eyebrow="Denial prevention playbook"
+          index="835"
+          eyebrow="Remittance · Denial playbook"
           tone="dark"
           title={
             <>
-              The denial codes we stop <span className="accent text-[#5EEAD4]">before</span> the payer sends them.
+              The denial codes we stop <Mark tone="dark">before</Mark> the payer sends them.
             </>
           }
           lede="Every remittance tells you why a claim failed. Prevo runs those same checks on the way out, so the answer never has to come back on an 835."
@@ -110,7 +111,7 @@ export default function DenialPlaybookSection() {
             transition={{ duration: 0.9, delay: 0.1, ease }}
           >
             <WindowPane title="Code Set Calendar" icon="calendar" className="h-full" bodyClassName="p-7 bg-[#F8FAFC]">
-            <h3 className="text-[28px] font-medium tracking-[-0.035em] leading-tight text-[#0B1220]">Code sets change. <span className="accent text-[#0F766E]">Prevo keeps up.</span></h3>
+            <h3 className="text-[28px] font-medium tracking-[-0.035em] leading-tight text-[#0B1220]">Code sets change. <Mark>Prevo keeps up.</Mark></h3>
             <p className="text-[13px] text-[#1E293B]/55 mt-2 leading-relaxed">
               A code that was valid last quarter can reject today. Every claim is validated against the
               code set in effect on its date of service.

@@ -6,7 +6,9 @@ const COLS = [
   {
     h: "Product",
     links: [
-      ["See it work", "#product"],
+      ["Worklist", "#product"],
+      ["Claim form", "#claim-form"],
+      ["Denial calculator", "#calculator"],
       ["How it works", "#how-it-works"],
       ["Code guide", "#code-guide"],
       ["Denial playbook", "#playbook"],

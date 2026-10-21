@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { motion, AnimatePresence, useInView, animate } from "framer-motion";
 import SectionHeader from "./SectionHeader";
 import { StatusPill } from "./WindowPane";
-import { SCENARIOS, HL, type Line } from "./scenarios-data";
+import { SCENARIOS, HL, type Line, type Scenario } from "./scenarios-data";
+import Mark from "./Mark";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -57,6 +58,79 @@ function ClaimTable({ lines, tone }: { lines: Line[]; tone: "bad" | "good" }) {
   );
 }
 
+// Drag (or watch) to wipe from the claim as usually submitted to Prevo's corrected claim
+function CompareClaim({ s }: { s: Scenario }) {
+  const [x, setX] = useState(94);
+  const ref = useRef<HTMLDivElement>(null);
+  const drag = useRef(false);
+  const touched = useRef(false);
+  const inView = useInView(ref, { once: true, margin: "-15%" });
+
+  useEffect(() => {
+    if (!inView) return;
+    let c: { stop: () => void } | undefined;
+    const t = setTimeout(() => {
+      if (touched.current) return;
+      c = animate(94, 6, { duration: 1.8, ease: [0.65, 0, 0.35, 1], onUpdate: (v) => !touched.current && setX(v) });
+    }, 700);
+    return () => {
+      clearTimeout(t);
+      c?.stop();
+    };
+  }, [inView]);
+
+  const move = (clientX: number) => {
+    const r = ref.current?.getBoundingClientRect();
+    if (!r) return;
+    setX(Math.max(0, Math.min(100, ((clientX - r.left) / r.width) * 100)));
+  };
+
+  return (
+    <div
+      ref={ref}
+      className="relative grid select-none cursor-ew-resize [touch-action:pan-y]"
+      onPointerDown={(e) => {
+        drag.current = true;
+        touched.current = true;
+        (e.target as Element).setPointerCapture?.(e.pointerId);
+        move(e.clientX);
+      }}
+      onPointerMove={(e) => drag.current && move(e.clientX)}
+      onPointerUp={() => (drag.current = false)}
+      onPointerCancel={() => (drag.current = false)}
+    >
+      {/* Before */}
+      <div className="[grid-area:1/1] px-4 py-3 bg-white">
+        <div className="flex justify-between mb-1">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#64748B]">As usually submitted</span>
+          <span className="font-mono text-[11px] text-[#991B1B]">{s.outcome.code}</span>
+        </div>
+        <ClaimTable lines={s.submitted} tone="bad" />
+        <p className="mt-2 rounded-md border-l-[3px] border-[#991B1B] bg-[#991B1B]/[0.05] px-3 py-2 text-[12.5px] text-[#7F1D1D] leading-relaxed">
+          {s.outcome.detail}
+        </p>
+      </div>
+      {/* After */}
+      <div className="[grid-area:1/1] px-4 py-3 bg-[#F0FDFA]" style={{ clipPath: `inset(0 0 0 ${x}%)` }}>
+        <div className="flex justify-between items-center mb-1">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#0F766E]">Prevo corrected</span>
+          <StatusPill tone="ok">Clean</StatusPill>
+        </div>
+        <ClaimTable lines={s.corrected} tone="good" />
+        <p className="mt-2 text-[12.5px] text-[#115E59] leading-relaxed">
+          <Mark>Every change</Mark> is linked back to the sentence in the note that supports it.
+        </p>
+      </div>
+      {/* Handle */}
+      <div className="absolute top-0 bottom-0 w-px bg-[#0F766E] pointer-events-none" style={{ left: `${x}%` }}>
+        <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[#0F766E] text-white grid place-items-center text-[12px] shadow-[0_6px_16px_-4px_rgba(15,118,110,0.6)]">
+          ⇆
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export default function ProductShowcase() {
   const [active, setActive] = useState(0);
   const [auto, setAuto] = useState(true);
@@ -91,12 +165,12 @@ export default function ProductShowcase() {
 
       <div className="relative max-w-[1400px] mx-auto px-6 lg:px-10">
         <SectionHeader
-          index="03"
-          eyebrow="See Prevo at work"
+          index="24"
+          eyebrow="Service lines"
           tone="dark"
           title={
             <>
-              One worklist. Every claim, <span className="accent text-[#5EEAD4]">explained.</span>
+              Open the worklist. Every line, <Mark tone="dark">explained.</Mark>
             </>
           }
           lede="Four encounters independent practices see every week: what usually gets submitted, why the payer pushes back, and the claim Prevo builds from the same note."
@@ -241,25 +315,9 @@ export default function ProductShowcase() {
                       <div className="rounded-xl bg-white border border-[#E2E8F0] overflow-hidden">
                         <div className="flex items-center justify-between px-4 h-10 border-b border-[#E2E8F0] bg-[#F8FAFC]">
                           <span className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#334155]">Claim scrubber · 837P</span>
-                          <StatusPill tone="alert">{s.outcome.label}</StatusPill>
+                          <span className="flex items-center gap-2"><span className="hidden sm:inline font-mono text-[10px] text-[#94A3B8]">drag to compare</span><StatusPill tone="alert">{s.outcome.label}</StatusPill></span>
                         </div>
-                        <div className="px-4 py-3">
-                          <div className="flex justify-between mb-1">
-                            <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#64748B]">As usually submitted</span>
-                            <span className="font-mono text-[11px] text-[#991B1B]">{s.outcome.code}</span>
-                          </div>
-                          <ClaimTable lines={s.submitted} tone="bad" />
-                          <p className="mt-2 rounded-md border-l-[3px] border-[#991B1B] bg-[#991B1B]/[0.05] px-3 py-2 text-[12.5px] text-[#7F1D1D] leading-relaxed">
-                            {s.outcome.detail}
-                          </p>
-                        </div>
-                        <div className="px-4 py-3 border-t border-[#E2E8F0] bg-[#0F766E]/[0.035]">
-                          <div className="flex justify-between items-center mb-1">
-                            <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#0F766E]">Prevo corrected</span>
-                            <StatusPill tone="ok">Clean</StatusPill>
-                          </div>
-                          <ClaimTable lines={s.corrected} tone="good" />
-                        </div>
+                        <CompareClaim key={s.id} s={s} />
                       </div>
 
                       <div className="rounded-xl bg-[#1E293B] p-5">
